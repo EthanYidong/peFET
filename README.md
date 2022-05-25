@@ -1,6 +1,6 @@
 # peFET
 ## Oribtal Project (CP2106), Summer 2022
-### Lee Issac, Tang Ethan Yidong
+### Lee Isaac, Tang Ethan Yidong
 ### Team Biohazard
 ### Apollo 11
 
