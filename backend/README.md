@@ -1,4 +1,6 @@
-# Seting up development environment
+# peFET backend
+
+## Seting up development environment
 
 This assumes you have python3 and pip3 installed,
 
@@ -12,7 +14,7 @@ Run the following commands:
 
 `pip3 install -r requirements.txt` (run to update dependencies)
 
-# Running the backend
+## Running the backend
 
 Run the command:
 
