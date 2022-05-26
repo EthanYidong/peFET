@@ -1,13 +1,11 @@
-import type { Component } from 'solid-js';
-import Comp from './Comp';
+import { useRoutes } from 'solid-app-router';
+import { routes } from '@/routes';
 
-const App: Component = () => {
+export default function App() {
+  const Route = useRoutes(routes);
   return (
     <>
-      <h1 class="text-2xl">Hello world!!!!</h1>
-      <Comp />
+      <Route/>
     </>
   );
 };
-
-export default App;
