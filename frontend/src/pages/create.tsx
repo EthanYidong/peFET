@@ -1,12 +1,32 @@
-import { createEffect, For } from 'solid-js';
+import { createResource, For } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import { useNavigate } from 'solid-app-router';
 
 import ParticipantEditor from '@/components/participant-editor';
-import type { Participant } from '@/models/participant';
+import type { Participant } from '@/lib/models/participant';
+import { API_URL, useToken } from '@/lib/api';
 
 export default function Create() {
-  
+  const [token, setToken, clearToken] = useToken(); 
   const [participants, setParticipants] = createStore<Participant[]>([]);
+  const navigate = useNavigate();
+
+  async function validateToken() {
+    if(!token()) navigate('/login');
+    let fetchResp = await fetch(API_URL + '/api/account/validate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({token: token()}) 
+    });
+
+
+    if (!fetchResp.ok) {
+      clearToken();
+      navigate('/login');
+    }
+  }
 
   function addButtonOnClick(_e) {
     setParticipants([...participants, {}]);
@@ -16,9 +36,12 @@ export default function Create() {
     console.log(participants);
   }
 
+  createResource(validateToken);
+
   return (
     <div class="flex flex-col p-8">
       <h1 class="text-2xl">Create New Event Listing</h1>
+      <h2 class="text-xl">If you're seeing this, that means you have successfully logged in. This page does not affect anything. It is only to demonstrate that the user is logged in, and serve as a prototype for event creation.</h2>
       <div>
         <ul>
         <For each={participants}>

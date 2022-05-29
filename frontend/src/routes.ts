@@ -9,5 +9,17 @@ export const routes: RouteDefinition[] = [
   {
     path: '/create',
     component: lazy(() => import('@/pages/create')),
+  },
+  {
+    path: '/signup',
+    component: lazy(() => import('@/pages/signup')),
+  },
+  {
+    path: '/login',
+    component: lazy(() => import('@/pages/login')),
+  },
+  {
+    path: '/logout',
+    component: lazy(() => import('@/pages/logout')),
   }
 ];

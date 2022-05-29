@@ -2,7 +2,7 @@
 // TODO: validate input client side
 import { untrack } from 'solid-js';
 
-import type { Participant } from '@/models/participant';
+import type { Participant } from '@/lib/models/participant';
 
 export default function ParticipantEditor(props: {participant: Participant, edit: (propName: keyof Participant, value: any) => void}) {
   function inputHandler(propName, e) {
