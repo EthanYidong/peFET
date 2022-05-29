@@ -16,7 +16,13 @@ def signup():
     data = request.get_json()
     hashed_password = bcrypt.hashpw(
         bytes(data['password'], 'utf-8'), bcrypt.gensalt())
-    User.create(email=data['email'], password=hashed_password)
+
+    user = User.get_or_none(email=data['email'])
+
+    if user is not None:
+        return jsonify({'errors': ['User already exists']}), 400
+    
+    User.create(email=data["email"], password=hashed_password)
 
     token = jwt.encode({
         'sub': data['email'],
