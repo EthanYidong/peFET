@@ -4,9 +4,7 @@
 
 This assumes you have python3 and pip3 installed,
 
-Run the following commands:
-
-`cd backend`
+Run the following commands in this directory.
 
 `python3 -m venv venv` (skip if you already have a virtual environment set up)
 
