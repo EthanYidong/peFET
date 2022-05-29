@@ -30,7 +30,13 @@ export default function Signup() {
   const [token, setToken, _clearToken] = useToken();
   const navigate = useNavigate();
 
+  const [localErrors, setLocalErrors] = createSignal([]);
+
   function onSignupFormSubmit(data) {
+    if(data.password !== data.repeatPassword) {
+      setLocalErrors(['Passwords do not match!']);
+      return; 
+    }
     setFormData(data);
   }
 
@@ -50,7 +56,7 @@ export default function Signup() {
     <div class="w-screen h-screen flex flex-col justify-center items-center">
       <div class="w-1/2 flex flex-col gap-2 border-2 rounded-md p-2">
         <h1 class="text-2xl font-bold">Sign Up</h1>
-        <Errors errors={loginData.error?.errors}></Errors>
+        <Errors errors={[...loginData.error?.errors ?? [], ...localErrors()]}></Errors>
         <form use:customFormHandler={onSignupFormSubmit}>
           <div class="flex flex-col gap-2">
           <div class="flex gap-2 h-8">
