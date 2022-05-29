@@ -16,6 +16,6 @@ Run the following commands:
 
 ## Running the backend
 
-Run the command:
+Run the command in this directory:
 
-`flask run`
+`python3 pefet/main.py`
