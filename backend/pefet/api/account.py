@@ -10,18 +10,21 @@ import bcrypt
 from app import app
 from models import User
 
+
 @app.route('/api/account/signup', methods=['POST'])
 def signup():
     data = request.get_json()
-    hashed_password = bcrypt.hashpw(bytes(data['password'], 'utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(
+        bytes(data['password'], 'utf-8'), bcrypt.gensalt())
     User.create(email=data['email'], password=hashed_password)
 
     token = jwt.encode({
         'sub': data['email'],
-        }, app.config['JWT_SECRET'])
+    }, app.config['JWT_SECRET'])
     return jsonify({
         'token': token,
     })
+
 
 @app.route('/api/account/login', methods=['POST'])
 def login():
@@ -32,21 +35,28 @@ def login():
     except User.DoesNotExist:
         return jsonify({'errors': ['Incorrect username or password']}), 400
 
-    if bcrypt.checkpw(bytes(data['password'], 'utf-8'), bytes(user.password, 'utf-8')):
+    if bcrypt.checkpw(
+        bytes(
+            data['password'],
+            'utf-8'),
+        bytes(
+            user.password,
+            'utf-8')):
         token = jwt.encode({
             'sub': user.email
-            }, app.config['JWT_SECRET'])
+        }, app.config['JWT_SECRET'])
         return jsonify({
             'token': token,
         })
     else:
         return jsonify({'errors': ['Incorrect username or password']}), 400
 
+
 @app.route('/api/account/validate', methods=['POST'])
 def validate():
     data = request.get_json()
     try:
         claims = jwt.decode(data['token'], app.config['JWT_SECRET'], ["HS256"])
-    except:
+    except BaseException:
         return jsonify({'errors': ['Invalid token']}), 400
     return jsonify({'email': claims['sub']})
