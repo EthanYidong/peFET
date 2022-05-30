@@ -37,6 +37,7 @@ export default function Signup() {
       setLocalErrors(['Passwords do not match!']);
       return; 
     }
+    setLocalErrors([]);
     setFormData(data);
   }
 
