@@ -18,8 +18,8 @@ export function customFormHandler(el, accessor) {
       data[key] = value;
     }
     accessor()?.(data);
-  }
-  el.addEventListener('submit', onSubmit);
+  };
+  el.addEventListener("submit", onSubmit);
 
-  onCleanup(() => el.removeEventListener('submit', onSubmit, false));
+  onCleanup(() => el.removeEventListener("submit", onSubmit, false));
 }

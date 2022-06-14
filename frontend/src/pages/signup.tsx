@@ -1,18 +1,20 @@
-import { createSignal, createResource, createEffect, untrack } from 'solid-js';
-import { useNavigate } from 'solid-app-router';
+import { createSignal, createResource, createEffect, untrack } from "solid-js";
+import { useNavigate } from "solid-app-router";
 
-import { customFormHandler } from '@/lib/custom-form-handler';
-import { API_URL, useToken } from '@/lib/api';
-import Errors from '@/components/errors';
+import { customFormHandler } from "@/lib/directives";
+import { API_URL, useToken } from "@/lib/api";
+import Navbar from "@/components/navbar";
+import Errors from "@/components/errors";
 
-async function signupReq(data) {
+
+async function submitReq(data) {
   // TODO: validate password
-  let fetchResp = await fetch(API_URL + '/api/account/signup', {
-    method: 'POST',
+  let fetchResp = await fetch(API_URL + "/api/account/signup", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data) 
+    body: JSON.stringify(data),
   });
 
   let fetchJSON = await fetchResp.json();
@@ -26,56 +28,71 @@ async function signupReq(data) {
 
 export default function Signup() {
   const [formData, setFormData] = createSignal(null);
-  const [loginData] = createResource(formData, signupReq);
+  const [fetchData] = createResource(formData, submitReq);
   const [token, setToken, _clearToken] = useToken();
   const navigate = useNavigate();
 
   const [localErrors, setLocalErrors] = createSignal([]);
 
-  function onSignupFormSubmit(data) {
-    if(data.password !== data.repeatPassword) {
-      setLocalErrors(['Passwords do not match!']);
-      return; 
+  function onFormSubmit(data) {
+    if (data.password !== data.repeatPassword) {
+      setLocalErrors(["Passwords do not match!"]);
+      return;
     }
     setLocalErrors([]);
     setFormData(data);
   }
 
   createEffect(() => {
-    if(loginData()){
-      setToken(loginData().token);
+    if (fetchData()) {
+      setToken(fetchData().token);
     }
   });
 
   createEffect(() => {
-    if(token() && token() !== 'null') {
-      navigate('/create');
+    if (token() && token() !== "null") {
+      navigate("/create");
     }
   });
 
   return (
-    <div class="w-screen h-screen flex flex-col justify-center items-center">
-      <div class="w-1/2 flex flex-col gap-2 border-2 rounded-md p-2">
-        <h1 class="text-2xl font-bold">Sign Up</h1>
-        <Errors errors={[...loginData.error?.errors ?? [], ...localErrors()]}></Errors>
-        <form use:customFormHandler={onSignupFormSubmit}>
-          <div class="flex flex-col gap-2">
-          <div class="flex gap-2 h-8">
-            <p class="w-1/5">Email: </p>
-            <input class="account-form" type="text" name="email"></input>
+    <>
+      <Navbar/>
+      <div
+        class="columns is-vcentered is-centered fullheight-with-navbar"
+      >
+        <div class="column is-6 box">
+          <div class="m-4">
+            <h1 class="title">Sign Up</h1>
+            <Errors errors={[...fetchData.error?.errors ?? [], ...localErrors()]}></Errors>
+            <form use:customFormHandler={onFormSubmit}>
+              <div class="field">
+                <label class="label">Email</label>
+                <div class="control">
+                  <input class="input" type="text" name="email"></input>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Password</label>
+                <div class="control">
+                  <input class="input" type="password" name="password"></input>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Repeat Password</label>
+                <div class="control">
+                  <input class="input" type="password" name="repeatPassword"></input>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <button class="button is-primary">Sign Up</button>
+                </div>
+              </div>
+            </form>
           </div>
-          <div class="flex gap-2 h-8">
-            <p class="w-1/5">Password: </p>
-            <input class="account-form" type="password" name="password"></input>
-          </div>
-          <div class="flex gap-2 h-8">
-            <p class="w-1/5">Repeat Password: </p>
-            <input class="account-form" type="password" name="repeatPassword"></input>
-          </div>
-          <button class="account-btn" type="submit">Sign Up</button>
-          </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
-};
+}

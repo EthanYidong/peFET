@@ -1,25 +1,50 @@
-import { lazy } from 'solid-js';
-import type { RouteDefinition } from 'solid-app-router';
+import { lazy } from "solid-js";
+import type { RouteDefinition } from "solid-app-router";
+import { EventsData } from "@/lib/route-data";
 
 export const routes: RouteDefinition[] = [
   {
-    path: '/',
-    component: lazy(() => import('@/pages/home')),
+    path: "/",
+    component: lazy(() => import("@/pages/home")),
   },
   {
-    path: '/create',
-    component: lazy(() => import('@/pages/create')),
+    path: "/create",
+    component: lazy(() => import("@/pages/create")),
   },
   {
-    path: '/signup',
-    component: lazy(() => import('@/pages/signup')),
+    path: "/signup",
+    component: lazy(() => import("@/pages/signup")),
   },
   {
-    path: '/login',
-    component: lazy(() => import('@/pages/login')),
+    path: "/login",
+    component: lazy(() => import("@/pages/login")),
   },
   {
-    path: '/logout',
-    component: lazy(() => import('@/pages/logout')),
+    path: "/logout",
+    component: lazy(() => import("@/pages/logout")),
+  },
+  {
+    path: "/dashboard",
+    component: lazy(() => import("@/pages/dashboard/layout-dashboard")),
+    data: EventsData,
+    children: [
+      {
+        path: "/",
+        component: lazy(() => import("@/pages/dashboard/home")),
+      },
+      {
+        path: "/event/:slug",
+        children: [
+          {
+            path: "/",
+            component: lazy(() => import("@/pages/dashboard/event/home")),
+          },
+          {
+            path: "/settings",
+            component: lazy(() => import("@/pages/dashboard/event/settings")),
+          }
+        ]
+      }
+    ]
   }
 ];

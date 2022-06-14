@@ -1,15 +1,13 @@
-import { useNavigate } from 'solid-app-router';
+import { useNavigate } from "solid-app-router";
 
-import { useToken } from '@/lib/api';
+import { useToken } from "@/lib/api";
 
 export default function Logout() {
   const [_token, _setToken, clearToken] = useToken();
   const navigate = useNavigate();
 
   clearToken();
-  navigate('/')
+  navigate("/");
 
-  return (
-    <></>
-  );
-};
+  return(<></>);
+}
