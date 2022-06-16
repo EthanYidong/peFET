@@ -4,6 +4,7 @@ declare module "solid-js" {
   namespace JSX {
     interface Directives {
       customFormHandler: (v: any, { form: any }) => any;
+      clickOutside: (v: any) => any;
     }
   }
 }
@@ -22,4 +23,11 @@ export function customFormHandler(el, accessor) {
   el.addEventListener("submit", onSubmit);
 
   onCleanup(() => el.removeEventListener("submit", onSubmit, false));
+}
+
+export function clickOutside(el, accessor) {
+  const onClick = (e) => !el.contains(e.target) && accessor()?.();
+  document.body.addEventListener("click", onClick);
+
+  onCleanup(() => document.body.removeEventListener("click", onClick));
 }

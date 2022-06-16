@@ -17,6 +17,8 @@ import { useEvent } from "@/lib/event";
 import { withOwner } from "@/lib/helpers";
 import { API_URL, useToken } from "@/lib/api";
 import ParticipantTableRow from "@/components/participant-table-row";
+import EmailDropdown from "@/components/email-dropdown";
+import EmailModal from "@/components/email-modal";
 
 async function submitReq(data, { owner }) {
   const [token, _setToken, _eraseToken] = useToken(owner);
@@ -57,6 +59,8 @@ export default function Home() {
 
   const [selected, setSelected] = createStore({} as any);
 
+  const [emailModal, setEmailModal] = createSignal(false);
+
   const filteredParticipants = createMemo(
     () => routeData.event()?.participants
   );
@@ -70,6 +74,18 @@ export default function Home() {
       }
       return true;
     }
+  });
+
+  const selectedParticipants = createMemo(() => {
+    const filteredList = [];
+    if (routeData.event()) {
+      for (const participant of routeData.event().participants) {
+        if (selected[participant.id]) {
+          filteredList.push(participant);
+        }
+      }
+    }
+    return filteredList;
   });
 
   function onAllCheckboxClick(e) {
@@ -87,7 +103,21 @@ export default function Home() {
 
   return (
     <>
+      <Show when={emailModal()}>
+        <EmailModal
+          onClose={() => setEmailModal(false)}
+          selectedParticipants={selectedParticipants}
+        />
+      </Show>
       <h1 class="title">{event().name}</h1>
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <EmailDropdown openEmailModal={setEmailModal} />
+          </div>
+        </div>
+        <div class="level-right"></div>
+      </div>
       <form id="createForm" use:customFormHandler={onFormSubmit} />
       <Show when={routeData.event()}>
         <div class="is-flex">
