@@ -23,14 +23,21 @@ async function fetchEventsData(_, { owner }) {
 export function EventsData({ params, location, navigate, data }) {
   const [token, _setToken, clearToken] = useToken();
   if (token()) {
-    const [fetchData, { mutate, refetch }] = createResource(withOwner(fetchEventsData));
+    const [fetchData, { mutate, refetch }] = createResource(
+      withOwner(fetchEventsData)
+    );
     createEffect(() => {
       if (fetchData.error) {
         clearToken();
         navigate("/login");
       }
     });
-    return { events: fetchData, mutateEvents: mutate, refetchEvents: refetch, ...data };
+    return {
+      events: fetchData,
+      mutateEvents: mutate,
+      refetchEvents: refetch,
+      ...data,
+    };
   } else {
     navigate("/login");
   }
@@ -66,7 +73,12 @@ export function EventData({ params, location, navigate, data }) {
         navigate("/dashboard");
       }
     });
-    return { event: fetchData, mutateEvent: mutate, refetchEvent: refetch, ...data };
+    return {
+      event: fetchData,
+      mutateEvent: mutate,
+      refetchEvent: refetch,
+      ...data,
+    };
   } else {
     navigate("/dashboard");
   }

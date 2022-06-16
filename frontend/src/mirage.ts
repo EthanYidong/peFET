@@ -76,7 +76,11 @@ createServer<typeof mirageModels, typeof mirageFactories>({
       const body = JSON.parse(request.requestBody);
       const event = schema.find("event", request.params.id);
 
-      schema.create("participant", {event: event, status: "not submitted", ...body});
+      schema.create("participant", {
+        event: event,
+        status: "not submitted",
+        ...body,
+      });
       return {};
     });
 
@@ -87,7 +91,6 @@ createServer<typeof mirageModels, typeof mirageFactories>({
       oldParticipant.update(body);
       return {};
     });
-
   },
   seeds(server) {
     const placeholderEvent = server.create("event", {

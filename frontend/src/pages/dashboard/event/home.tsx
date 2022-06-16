@@ -1,4 +1,13 @@
-import { For, Show, createSignal, createResource, createSelector, runWithOwner } from "solid-js";
+import {
+  For,
+  Show,
+  createSignal,
+  createResource,
+  createSelector,
+  createMemo,
+  runWithOwner,
+} from "solid-js";
+import { createStore } from "solid-js/store";
 import { useRouteData } from "solid-app-router";
 
 import { FaSolidEdit, FaSolidPlusCircle } from "solid-icons/fa";
@@ -14,14 +23,17 @@ async function submitReq(data, { owner }) {
   const routeData: any = runWithOwner(owner, useRouteData);
   const event: any = runWithOwner(owner, useEvent);
 
-  const fetchResp = await fetch(`${API_URL}/api/event/${event().id}/participants/create`, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + token(),
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  const fetchResp = await fetch(
+    `${API_URL}/api/event/${event().id}/participants/create`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
 
   const fetchJSON = await fetchResp.json();
   if (fetchResp.ok) {
@@ -41,7 +53,32 @@ export default function Home() {
   const [fetchData] = createResource(formData, withOwner(submitReq));
 
   const [editing, setEditing] = createSignal(null);
-  const isSelected = createSelector(editing);
+  const isEditing = createSelector(editing);
+
+  const [selected, setSelected] = createStore({} as any);
+
+  const filteredParticipants = createMemo(
+    () => routeData.event()?.participants
+  );
+
+  const allSelected = createMemo(() => {
+    if (filteredParticipants()) {
+      for (const participant of filteredParticipants()) {
+        if (!selected[participant.id]) {
+          return false;
+        }
+      }
+      return true;
+    }
+  });
+
+  function onAllCheckboxClick(e) {
+    const checked = (e.target as HTMLInputElement).checked;
+    setSelected(
+      filteredParticipants().map((p) => p.id),
+      checked
+    );
+  }
 
   function onFormSubmit(data, { form }) {
     form.reset();
@@ -58,7 +95,11 @@ export default function Home() {
             <thead>
               <tr>
                 <th>
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    onClick={onAllCheckboxClick}
+                    checked={allSelected()}
+                  />
                 </th>
                 <th></th>
                 <th>Name</th>
@@ -68,15 +109,29 @@ export default function Home() {
               <tr>
                 <td></td>
                 <td>
-                  <button class="button is-small is-text" type="submit" form="createForm">
+                  <button
+                    class="button is-small is-text"
+                    type="submit"
+                    form="createForm"
+                  >
                     <FaSolidPlusCircle />
                   </button>
                 </td>
                 <td>
-                  <input class="input is-small" type="text" name="name" form="createForm" />
+                  <input
+                    class="input is-small"
+                    type="text"
+                    name="name"
+                    form="createForm"
+                  />
                 </td>
                 <td>
-                  <input class="input is-small" type="text" name="email" form="createForm" />
+                  <input
+                    class="input is-small"
+                    type="text"
+                    name="email"
+                    form="createForm"
+                  />
                 </td>
                 <td></td>
               </tr>
@@ -84,7 +139,19 @@ export default function Home() {
             <tbody>
               <For each={routeData.event().participants}>
                 {(participant: any) => (
-                  <ParticipantTableRow participant={participant} editing={isSelected(participant.id)} onEdit={() => setEditing(participant.id)} onSave={() => setEditing(null)} />
+                  <ParticipantTableRow
+                    participant={participant}
+                    editing={isEditing(participant.id)}
+                    selected={selected[participant.id]}
+                    onEdit={() => setEditing(participant.id)}
+                    onSave={() => setEditing(null)}
+                    onSelect={(e) =>
+                      setSelected(
+                        participant.id,
+                        (e.target as HTMLInputElement).checked
+                      )
+                    }
+                  />
                 )}
               </For>
             </tbody>

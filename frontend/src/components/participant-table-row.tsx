@@ -1,4 +1,10 @@
-import { Show, createRenderEffect, createSignal, createResource, runWithOwner } from "solid-js";
+import {
+  Show,
+  createRenderEffect,
+  createSignal,
+  createResource,
+  runWithOwner,
+} from "solid-js";
 import { useRouteData } from "solid-app-router";
 import { FaSolidEdit, FaSolidEllipsisH, FaSolidSave } from "solid-icons/fa";
 
@@ -11,14 +17,17 @@ async function submitReq(data, { owner }) {
   const routeData: any = runWithOwner(owner, useRouteData);
   const event: any = runWithOwner(owner, useEvent);
 
-  const fetchResp = await fetch(`${API_URL}/api/event/${event().id}/participants/${data.id}/update`, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + token(),
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  const fetchResp = await fetch(
+    `${API_URL}/api/event/${event().id}/participants/${data.id}/update`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
 
   const fetchJSON = await fetchResp.json();
   if (fetchResp.ok) {
@@ -37,7 +46,7 @@ export default function ParticipantTableRow(props) {
   let editForm;
 
   createRenderEffect((prev) => {
-    if(prev && !props.editing) {
+    if (prev && !props.editing) {
       const formData = new FormData(editForm);
       const data = {};
       for (let field of formData) {
@@ -51,25 +60,40 @@ export default function ParticipantTableRow(props) {
     return props.editing;
   });
 
-  return(
-    <Show when={props.editing} fallback={
+  return (
+    <Show
+      when={props.editing}
+      fallback={
+        <tr>
+          <td>
+            <input
+              type="checkbox"
+              onClick={props.onSelect}
+              checked={props.selected}
+            />
+          </td>
+          <td>
+            <button
+              class="button is-small is-text"
+              classList={{ "is-loading": fetchData.loading }}
+              onClick={props.onEdit}
+            >
+              <FaSolidEdit />
+            </button>
+          </td>
+          <td>{props.participant.name}</td>
+          <td>{props.participant.email}</td>
+          <td>{props.participant.status}</td>
+        </tr>
+      }
+    >
       <tr>
         <td>
-          <input type="checkbox" />
-        </td>
-        <td>
-          <button class="button is-small is-text" classList={{"is-loading": fetchData.loading}} onClick={props.onEdit} >
-            <FaSolidEdit />
-          </button>
-        </td>
-        <td>{props.participant.name}</td>
-        <td>{props.participant.email}</td>
-        <td>{props.participant.status}</td>
-      </tr>
-    }>
-      <tr>
-        <td>
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            onClick={props.onSelect}
+            checked={props.selected}
+          />
         </td>
         <td>
           <form ref={editForm} id="editParticipantForm" />
@@ -77,11 +101,26 @@ export default function ParticipantTableRow(props) {
             <FaSolidSave />
           </button>
         </td>
-        <td><input class="input is-small" type="text" name="name" value={props.participant.name} form="editParticipantForm"/></td>
-        <td><input class="input is-small" type="text" name="email" value={props.participant.email} form="editParticipantForm"/></td>
+        <td>
+          <input
+            class="input is-small"
+            type="text"
+            name="name"
+            value={props.participant.name}
+            form="editParticipantForm"
+          />
+        </td>
+        <td>
+          <input
+            class="input is-small"
+            type="text"
+            name="email"
+            value={props.participant.email}
+            form="editParticipantForm"
+          />
+        </td>
         <td>{props.participant.status}</td>
       </tr>
     </Show>
-  
   );
 }
