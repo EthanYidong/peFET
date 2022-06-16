@@ -3,7 +3,7 @@ import { onCleanup } from "solid-js";
 declare module "solid-js" {
   namespace JSX {
     interface Directives {
-      customFormHandler: (v: any) => any;
+      customFormHandler: (v: any, {form: any}) => any;
     }
   }
 }
@@ -17,7 +17,7 @@ export function customFormHandler(el, accessor) {
       const [key, value] = field;
       data[key] = value;
     }
-    accessor()?.(data);
+    accessor()?.(data, {form: el});
   };
   el.addEventListener("submit", onSubmit);
 

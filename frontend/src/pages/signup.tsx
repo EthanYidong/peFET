@@ -6,7 +6,6 @@ import { API_URL, useToken } from "@/lib/api";
 import Navbar from "@/components/navbar";
 import Errors from "@/components/errors";
 
-
 async function submitReq(data) {
   // TODO: validate password
   let fetchResp = await fetch(API_URL + "/api/account/signup", {
@@ -57,14 +56,14 @@ export default function Signup() {
 
   return (
     <>
-      <Navbar/>
-      <div
-        class="columns is-vcentered is-centered fullheight-with-navbar"
-      >
+      <Navbar />
+      <div class="columns is-vcentered is-centered fullheight-with-navbar">
         <div class="column is-6 box">
           <div class="m-4">
             <h1 class="title">Sign Up</h1>
-            <Errors errors={[...fetchData.error?.errors ?? [], ...localErrors()]}></Errors>
+            <Errors
+              errors={[...(fetchData.error?.errors ?? []), ...localErrors()]}
+            ></Errors>
             <form use:customFormHandler={onFormSubmit}>
               <div class="field">
                 <label class="label">Email</label>
@@ -81,7 +80,11 @@ export default function Signup() {
               <div class="field">
                 <label class="label">Repeat Password</label>
                 <div class="control">
-                  <input class="input" type="password" name="repeatPassword"></input>
+                  <input
+                    class="input"
+                    type="password"
+                    name="repeatPassword"
+                  ></input>
                 </div>
               </div>
               <div class="field">

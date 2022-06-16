@@ -1,6 +1,6 @@
 import { lazy } from "solid-js";
 import type { RouteDefinition } from "solid-app-router";
-import { EventsData } from "@/lib/route-data";
+import { EventData, EventsData } from "@/lib/route-data";
 
 export const routes: RouteDefinition[] = [
   {
@@ -33,7 +33,9 @@ export const routes: RouteDefinition[] = [
         component: lazy(() => import("@/pages/dashboard/home")),
       },
       {
-        path: "/event/:slug",
+        path: "/event/:id",
+        component: lazy(() => import("@/pages/dashboard/event/layout-event")),
+        data: EventData,
         children: [
           {
             path: "/",
@@ -42,9 +44,9 @@ export const routes: RouteDefinition[] = [
           {
             path: "/settings",
             component: lazy(() => import("@/pages/dashboard/event/settings")),
-          }
-        ]
-      }
-    ]
-  }
+          },
+        ],
+      },
+    ],
+  },
 ];

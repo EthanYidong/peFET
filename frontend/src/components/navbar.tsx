@@ -11,14 +11,21 @@ export default function Navbar() {
   return (
     <nav class="navbar">
       <div class="container">
-        <a role="button" class="navbar-burger" classList={{"is-active": isActive()}} onClick={() => setIsActive(!isActive())}>
+        <a
+          role="button"
+          class="navbar-burger"
+          classList={{ "is-active": isActive() }}
+          onClick={() => setIsActive(!isActive())}
+        >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
-        <div class="navbar-menu" classList={{"is-active": isActive()}}>
+        <div class="navbar-menu" classList={{ "is-active": isActive() }}>
           <div class="navbar-start">
-            <Link class="navbar-item" href="/">Home</Link>
+            <Link class="navbar-item" href="/">
+              Home
+            </Link>
             <Show when={token()}>
               <Link class="navbar-item" href="/dashboard">
                 Dashboard

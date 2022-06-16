@@ -9,5 +9,5 @@ export default function Logout() {
   clearToken();
   navigate("/");
 
-  return(<></>);
+  return <></>;
 }

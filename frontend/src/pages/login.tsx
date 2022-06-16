@@ -48,10 +48,8 @@ export default function Login() {
 
   return (
     <>
-      <Navbar/>
-      <div
-        class="columns is-vcentered is-centered fullheight-with-navbar"
-      >
+      <Navbar />
+      <div class="columns is-vcentered is-centered fullheight-with-navbar">
         <div class="column is-6 box">
           <div class="m-4">
             <h1 class="title">Login</h1>
