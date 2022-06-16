@@ -42,7 +42,7 @@ export default function Login() {
 
   createEffect(() => {
     if (token()) {
-      navigate("/create");
+      navigate("/dashboard");
     }
   });
 

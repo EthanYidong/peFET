@@ -50,7 +50,7 @@ export default function Signup() {
 
   createEffect(() => {
     if (token() && token() !== "null") {
-      navigate("/create");
+      navigate("/dashboard");
     }
   });
 
