@@ -68,7 +68,7 @@ export default function Settings() {
           </div>
           <div class="field">
             <div class="control">
-              <button class="button is-primary" type="submit">
+              <button class="button is-primary" classList={{"is-loading": fetchData.loading}} type="submit">
                 Save
               </button>
             </div>

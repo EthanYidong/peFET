@@ -80,6 +80,14 @@ createServer<typeof mirageModels, typeof mirageFactories>({
       return {};
     });
 
+    this.post("/api/event/:id/participants/:pid/update", (schema, request) => {
+      const body = JSON.parse(request.requestBody);
+      const oldParticipant = schema.find("participant", request.params.pid);
+
+      oldParticipant.update(body);
+      return {};
+    });
+
   },
   seeds(server) {
     const placeholderEvent = server.create("event", {

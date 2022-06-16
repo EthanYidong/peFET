@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createResource, runWithOwner } from "solid-js";
+import { For, Show, createSignal, createResource, createSelector, runWithOwner } from "solid-js";
 import { useRouteData } from "solid-app-router";
 
 import { FaSolidEdit, FaSolidPlusCircle } from "solid-icons/fa";
@@ -7,6 +7,7 @@ import { customFormHandler } from "@/lib/directives";
 import { useEvent } from "@/lib/event";
 import { withOwner } from "@/lib/helpers";
 import { API_URL, useToken } from "@/lib/api";
+import ParticipantTableRow from "@/components/participant-table-row";
 
 async function submitReq(data, { owner }) {
   const [token, _setToken, _eraseToken] = useToken(owner);
@@ -39,7 +40,10 @@ export default function Home() {
   const [formData, setFormData] = createSignal(null);
   const [fetchData] = createResource(formData, withOwner(submitReq));
 
-  function onFormSubmit(data, {form}) {
+  const [editing, setEditing] = createSignal(null);
+  const isSelected = createSelector(editing);
+
+  function onFormSubmit(data, { form }) {
     form.reset();
     setFormData({ ...data });
   }
@@ -47,7 +51,7 @@ export default function Home() {
   return (
     <>
       <h1 class="title">{event().name}</h1>
-      <form id="createForm" use:customFormHandler={onFormSubmit}/>
+      <form id="createForm" use:customFormHandler={onFormSubmit} />
       <Show when={routeData.event()}>
         <div class="is-flex">
           <table class="table is-flex-grow-1">
@@ -69,10 +73,10 @@ export default function Home() {
                   </button>
                 </td>
                 <td>
-                  <input class="input is-small" type="text" name="name" form="createForm"/>
+                  <input class="input is-small" type="text" name="name" form="createForm" />
                 </td>
                 <td>
-                  <input class="input is-small" type="text" name="email" form="createForm"/>
+                  <input class="input is-small" type="text" name="email" form="createForm" />
                 </td>
                 <td></td>
               </tr>
@@ -80,19 +84,7 @@ export default function Home() {
             <tbody>
               <For each={routeData.event().participants}>
                 {(participant: any) => (
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <button class="button is-small is-text">
-                        <FaSolidEdit />
-                      </button>
-                    </td>
-                    <td>{participant.name}</td>
-                    <td>{participant.email}</td>
-                    <td>{participant.status}</td>
-                  </tr>
+                  <ParticipantTableRow participant={participant} editing={isSelected(participant.id)} onEdit={() => setEditing(participant.id)} onSave={() => setEditing(null)} />
                 )}
               </For>
             </tbody>
