@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='participant',
             name='status',
-            field=models.CharField(choices=[('N', 'Not Submitted'), ('Y', 'Submitted')], default='N', max_length=1),
+            field=models.CharField(
+                choices=[('N', 'Not Submitted'), ('Y', 'Submitted')], default='N', max_length=1),
         ),
     ]

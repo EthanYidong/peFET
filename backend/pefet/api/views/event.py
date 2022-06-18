@@ -98,7 +98,8 @@ def create_participant(request, event_id):
 
     content = json.loads(request.body)
 
-    new_participant = Participant(name=content['name'], email=content['email'], event_id=event.id)
+    new_participant = Participant(
+        name=content['name'], email=content['email'], event_id=event.id)
     new_participant.save()
 
     return JsonResponse({'id': new_participant.id}, safe=False)
