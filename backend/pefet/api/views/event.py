@@ -31,8 +31,32 @@ def create(request):
 
     event_date = datetime.strptime(content['date'], '%Y-%m-%d').date()
 
-    new_event = Event(name=content["name"],
+    new_event = Event(name=content['name'],
                       date=event_date, creator_id=claims['sub'])
     new_event.save()
 
-    return JsonResponse({"id": new_event.id})
+    return JsonResponse({'id': new_event.id})
+
+
+@require_http_methods(['POST'])
+def update(request, id):
+    try:
+        claims = auth.extract_claims(request)
+    except:
+        return JsonResponse({'errors': ['Invalid token']}, status=401)
+
+    content = json.loads(request.body)
+
+    try:
+        existing_event = Event.objects.get(id=id)
+    except Event.DoesNotExist:
+        return JsonResponse({'errors': ['No such event']}, status=404)
+
+    if existing_event.creator_id != claims['sub']:
+        return JsonResponse({'errors': ['Unauthorized to update this event']}, status=401)
+
+    existing_event.name = content['name']
+    existing_event.date = datetime.strptime(content['date'], '%Y-%m-%d').date()
+    existing_event.save()
+
+    return JsonResponse({})
