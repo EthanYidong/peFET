@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 
 import json
 
-from ..models import Event
+from ..models import Event, Participant
 from ..helpers import auth
 
 
@@ -17,7 +17,7 @@ def all(request):
         return JsonResponse({'errors': ['Invalid token']}, status=401)
 
     data = list(Event.objects.filter(creator_id=claims['sub']).values())
-    return JsonResponse(data, safe=False)
+    return JsonResponse({'events': data}, safe=False)
 
 
 @require_http_methods(['POST'])
@@ -39,7 +39,7 @@ def create(request):
 
 
 @require_http_methods(['POST'])
-def update(request, id):
+def update(request, event_id):
     try:
         claims = auth.extract_claims(request)
     except:
@@ -48,7 +48,7 @@ def update(request, id):
     content = json.loads(request.body)
 
     try:
-        existing_event = Event.objects.get(id=id)
+        existing_event = Event.objects.get(id=event_id)
     except Event.DoesNotExist:
         return JsonResponse({'errors': ['No such event']}, status=404)
 
@@ -60,3 +60,22 @@ def update(request, id):
     existing_event.save()
 
     return JsonResponse({})
+
+
+@require_http_methods(['GET'])
+def read_participants(request, event_id):
+    try:
+        claims = auth.extract_claims(request)
+    except:
+        return JsonResponse({'errors': ['Invalid token']}, status=401)
+
+    try:
+        event = Event.objects.get(id=event_id)
+    except Event.DoesNotExist:
+        return JsonResponse({'errors': ['No such event']}, status=404)
+
+    if event.creator_id != claims['sub']:
+        return JsonResponse({'errors': ['Unauthorized to read from this event']}, status=401)
+
+    data = list(Participant.objects.filter(event_id=event.id).values())
+    return JsonResponse({'participants': data}, safe=False)
