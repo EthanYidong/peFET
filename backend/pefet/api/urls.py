@@ -24,7 +24,8 @@ urlpatterns = [
         path('<int:event_id>/', include([
             path('update', event.update),
             path('participants/', include([
-                path('', event.read_participants)
+                path('', event.read_participants),
+                path('create', event.create_participant),
             ]))
         ]))
     ])),
