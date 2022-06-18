@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('date', models.DateTimeField()),
             ],
@@ -23,7 +24,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(default='AnonymousUser', max_length=100)),
                 ('email', models.CharField(max_length=100, unique=True)),
                 ('password', models.BinaryField(max_length=60)),
@@ -32,15 +34,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Participant',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('email', models.CharField(max_length=100)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.event')),
+                ('event', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='api.event')),
             ],
         ),
         migrations.AddField(
             model_name='event',
             name='creator',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.user'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='api.user'),
         ),
     ]

@@ -5,11 +5,11 @@ from ..models import Event
 
 import json
 
+
 def all(request):
     try:
         claims = auth.extract_claims(request)
     except:
-        return JsonResponse({'errors': ['Invalid token']}, status=401) 
+        return JsonResponse({'errors': ['Invalid token']}, status=401)
     data = list(Event.objects.values())
     return JsonResponse(data, safe=False)
-    
