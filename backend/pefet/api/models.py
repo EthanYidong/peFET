@@ -7,7 +7,7 @@ class User(models.Model):
     password = models.BinaryField(max_length=60)
 
     def __str__(self):
-        return self.name
+        return self.email
 
 
 class Event(models.Model):
