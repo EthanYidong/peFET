@@ -7,6 +7,7 @@ import bcrypt
 import jwt
 
 from ..models import User
+from ..helpers import auth
 
 @require_http_methods(['POST'])
 def signup(request):
@@ -35,22 +36,20 @@ def login(request):
   if not bcrypt.checkpw(bytes(content['password'], 'utf-8'), existing_user.first().password):
     return JsonResponse({'errors': ['Password is incorrect']}, status=401)
 
-  encoded_jwt = jwt.encode({'sub': existing_user.first().email}, settings.JWT_SECRET, algorithm="HS256")
+  encoded_jwt = jwt.encode({'sub': existing_user.first().id}, settings.JWT_SECRET, algorithm="HS256")
 
   return JsonResponse({'token': encoded_jwt})
 
 @require_http_methods(['POST'])
 def validate(request):
-  content = json.loads(request.body)
-
   try:
-    claims = jwt.decode(content['token'], settings.JWT_SECRET, ['HS256'])
+    claims = auth.extract_claims(request)
   except:
-    return JsonResponse({'errors': ['Invalid token']}, status=401)
+    return JsonResponse({'errors': ['Invalid token']}, status=401) 
 
-  existing_user = User.objects.filter(email=claims['sub'])
+  existing_user = User.objects.filter(id=claims['sub'])
 
   if not existing_user.exists():
     return JsonResponse({'errors': ['Invalid token']}, status=401)
 
-  return JsonResponse({'email': existing_user.first().email}) 
+  return JsonResponse({'id': existing_user.first().id}) 
