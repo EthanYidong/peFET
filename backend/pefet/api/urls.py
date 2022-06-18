@@ -18,10 +18,16 @@ from django.urls import include, path
 from .views import account, event
 
 urlpatterns = [
-    path('event/all', event.all),
-    path('event/create', event.create),
-    path('event/<int:id>/update', event.update),
-    path('account/signup', account.signup),
-    path('account/login', account.login),
-    path('account/validate', account.validate),
+    path('event/', include([
+        path('all', event.all),
+        path('create', event.create),
+        path('<int:event_id>/', include([
+            path('update', event.update),
+        ]))
+    ])),
+    path('account/', include([
+        path('signup', account.signup),
+        path('login', account.login),
+        path('validate', account.validate),
+    ])),
 ]
