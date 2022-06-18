@@ -19,6 +19,7 @@ from .views import account, event
 
 urlpatterns = [
     path('event/all', event.all),
+    path('event/create', event.create),
     path('account/signup', account.signup),
     path('account/login', account.login),
     path('account/validate', account.validate),

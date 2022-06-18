@@ -46,7 +46,7 @@ def login(request):
     return JsonResponse({'token': encoded_jwt})
 
 
-@require_http_methods(['POST'])
+@require_http_methods(['GET'])
 def validate(request):
     try:
         claims = auth.extract_claims(request)
