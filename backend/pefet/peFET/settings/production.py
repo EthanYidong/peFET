@@ -6,7 +6,7 @@ from .common import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['api.pefet.blender.eu.org']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
@@ -19,9 +19,12 @@ DATABASES = {
 
 CORS_ALLOWED_ORIGINS = [
     'https://pefet.blender.eu.org',
+    'https://www.pefet.blender.eu.org',
 ]
 
-FRONTEND_URL = 'http://localhost:8080'
+CORS_ALLOW_HEADERS = ['*']
+
+FRONTEND_URL = 'https://pefet.blender.eu.org'
 
 JWT_SECRET = config('JWT_SECRET', cast=lambda k: bytes(k, "utf-8"))
 
