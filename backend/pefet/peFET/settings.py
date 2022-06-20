@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -129,3 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 JWT_SECRET = b'\xa8\xaeK\x07\xd7$\xe4|\xe4k\x1f#1o\xb9 tmP\x0b\x86U\xb9\xb9\xcd.\xfc\xf0\x0b}x\xcf\x9e\xac:\xd9\xe7\xd5\xd1QS\xfe\xa3\x86\x8e\x1c7Ip4_\xe0\xeb\xb8\x15{\xf4\xda\xda\x1b\x99\xe2V\xb2'
+
+SENDGRID_API_KEY = config('SENDGRID_API_KEY')
+
+FRONTEND_URL = 'http://localhost:8080'

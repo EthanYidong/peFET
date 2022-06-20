@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from .views import account, event
+from .views import account, event, functions
 
 urlpatterns = [
     path('event/', include([
@@ -23,10 +23,11 @@ urlpatterns = [
         path('create', event.create),
         path('<int:event_id>/', include([
             path('update', event.update),
+            path('send_emails', functions.send_emails),
             path('participants/', include([
                 path('', event.read_participants),
                 path('create', event.create_participant),
-            ]))
+            ])),
         ]))
     ])),
     path('account/', include([

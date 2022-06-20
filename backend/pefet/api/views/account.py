@@ -1,8 +1,9 @@
+import json
+
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 
-import json
 import bcrypt
 import jwt
 

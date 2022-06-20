@@ -1,0 +1,34 @@
+<mjml>
+  <mj-head>
+    <mj-style>
+    </mj-style>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text font-family="Georgia" font-style="italic">
+          <h2>Dear $name,</h2>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text font-family="Arial" font-size="16px" line-height="1.2">
+          <p>
+            Thank you for registering for $event_name.
+            The event coordinator has requested that you submit a pre-event test through peFET, including the following message:</p>
+        </mj-text>
+        <mj-text font-family="Arial" font-size="12px" font-style="italic" padding="0 10%">
+          <p>
+            $body
+          </p>
+        </mj-text>
+          <mj-button background-color="#f45e43" color="white" href="$portal_link">
+            Go to Portal
+          </mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

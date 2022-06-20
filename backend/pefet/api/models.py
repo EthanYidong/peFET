@@ -34,6 +34,7 @@ class Participant(models.Model):
         choices=STATUS_CHOICES,
         default=NOT_SUBMITTED,
     )
+    last_email_sent = models.DateTimeField(blank=True, null=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
