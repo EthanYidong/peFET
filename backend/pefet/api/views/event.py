@@ -105,7 +105,7 @@ def create_participant(request, event_id):
 
 
 @require_http_methods(['POST'])
-def update_participant(request, event_id):
+def update_participant(request, event_id, participant_id):
     try:
         claims = auth.extract_claims(request)
     except:
@@ -119,15 +119,15 @@ def update_participant(request, event_id):
     if event.creator_id != claims['sub']:
         return JsonResponse({'errors': ['Unauthorized to update this event']}, status=401)
 
-    content = json.loads(request.body)
-
     try:
-        existing_participant = Participant.objects.get(id=content['id'])
+        existing_participant = Participant.objects.get(id=participant_id)
     except:
         return JsonResponse({'errors': ['Participant does not exist']}, status=404)
 
     if existing_participant.event_id != event.id:
         return JsonResponse({'errors': ['Participant does not belong to this event']}, status=400)
+
+    content = json.loads(request.body)
 
     existing_participant.name = content['name']
     existing_participant.email = content['email']
