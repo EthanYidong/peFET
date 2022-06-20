@@ -91,12 +91,12 @@ def upload_image(request):
 
     if not qr_data:
         return JsonResponse({"errors": ["QR code was not found in image"]}, status=400)
-    
+
     for qr in qr_data:
         try:
             claims = jwt.decode(qr.data, settings.QR_JWT_SECRET, ['HS256'])
             passed = datetime.now() - datetime.fromtimestamp(claims['iat'])
-            
+
             if passed.total_seconds() < settings.MAX_QR_AGE:
                 participant.status = Participant.SUBMITTED
                 participant.save()
@@ -105,6 +105,5 @@ def upload_image(request):
                 return JsonResponse({"errors": ["QR code was too old"]}, status=400)
         except jwt.PyJWTError:
             pass
-    
+
     return JsonResponse({"errors": ["QR code was invalid"]}, status=400)
-    
