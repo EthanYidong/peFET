@@ -127,6 +127,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # TODO: make more specific once done working out hosting
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -139,3 +141,5 @@ QR_JWT_SECRET = b'\xb6\xd5x\xe2*\xc6E\xb4\xa4\xa3\xa6\xffx\xde9\n\xa5Z!\ta9}\xef
 SENDGRID_API_KEY = config('SENDGRID_API_KEY')
 
 FRONTEND_URL = 'http://localhost:8080'
+
+MAX_IMAGE_DIMS = 1024

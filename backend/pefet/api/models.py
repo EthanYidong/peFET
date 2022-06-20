@@ -39,3 +39,11 @@ class Participant(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UploadedFetImage(models.Model):
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='uploads/fet/')
+
+    def __str__(self):
+        return self.image.url
