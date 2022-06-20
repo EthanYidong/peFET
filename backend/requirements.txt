@@ -9,6 +9,7 @@ pycodestyle==2.8.0
 pycparser==2.21
 PyJWT==2.4.0
 python-decouple==3.6
+pyzbar==0.1.9
 qrcode==7.3.1
 sqlparse==0.4.2
 toml==0.10.2

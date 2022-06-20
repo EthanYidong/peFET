@@ -1,4 +1,6 @@
+from ast import Bytes
 from datetime import datetime
+from functools import partial
 from io import BytesIO
 import uuid
 
@@ -9,6 +11,7 @@ from django.views.decorators.http import require_http_methods
 import jwt
 import qrcode
 from PIL import Image
+from pyzbar.pyzbar import decode as decodeQr
 
 from ..models import Participant, UploadedFetImage
 from ..helpers import auth
@@ -71,15 +74,37 @@ def upload_image(request):
 
     image = Image.open(BytesIO(image_buf))
 
+    qr_data = decodeQr(image)
+
     resize_ratio = max(image.width, image.height) / settings.MAX_IMAGE_DIMS
     if resize_ratio > 1:
         image = image.resize(
             (int(image.width // resize_ratio), int(image.height // resize_ratio)))
 
-    rand_path = f'uploads/fet/{uuid.uuid4()}.png'
-    image.save(settings.MEDIA_ROOT / rand_path, "PNG")
+    partial_path = f'uploads/fet/{uuid.uuid4()}.png'
+    full_path = settings.MEDIA_ROOT / partial_path
+    image.save(full_path, "PNG")
 
     new_upload = UploadedFetImage(
-        participant_id=participant.id, image=rand_path)
+        participant_id=participant.id, image=partial_path)
     new_upload.save()
-    return JsonResponse({})
+
+    if not qr_data:
+        return JsonResponse({"errors": ["QR code was not found in image"]}, status=400)
+    
+    for qr in qr_data:
+        try:
+            claims = jwt.decode(qr.data, settings.QR_JWT_SECRET, ['HS256'])
+            passed = datetime.now() - datetime.fromtimestamp(claims['iat'])
+            
+            if passed.total_seconds() < settings.MAX_QR_AGE:
+                participant.status = Participant.SUBMITTED
+                participant.save()
+                return JsonResponse({})
+            else:
+                return JsonResponse({"errors": ["QR code was too old"]}, status=400)
+        except jwt.PyJWTError:
+            pass
+    
+    return JsonResponse({"errors": ["QR code was invalid"]}, status=400)
+    
