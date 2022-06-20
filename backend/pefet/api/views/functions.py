@@ -77,4 +77,4 @@ def send_emails(request, event_id):
 
     server.quit()
 
-    return JsonResponse({}, safe=False)
+    return JsonResponse({})
