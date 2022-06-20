@@ -30,6 +30,7 @@ FRONTEND_URL = 'https://pefet.blender.eu.org'
 
 JWT_SECRET = config('JWT_SECRET', cast=lambda k: bytes(k, "utf-8"))
 
-PARTICIPANT_JWT_SECRET = config('PARTICIPANT_JWT_SECRET', cast=lambda k: bytes(k, "utf-8"))
+PARTICIPANT_JWT_SECRET = config(
+    'PARTICIPANT_JWT_SECRET', cast=lambda k: bytes(k, "utf-8"))
 
 QR_JWT_SECRET = config('QR_JWT_SECRET', cast=lambda k: bytes(k, "utf-8"))

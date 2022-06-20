@@ -102,3 +102,35 @@ def create_participant(request, event_id):
     new_participant.save()
 
     return JsonResponse({'id': new_participant.id}, safe=False)
+
+
+@require_http_methods(['POST'])
+def update_participant(request, event_id):
+    try:
+        claims = auth.extract_claims(request)
+    except:
+        return JsonResponse({'errors': ['Invalid token']}, status=401)
+
+    try:
+        event = Event.objects.get(id=event_id)
+    except Event.DoesNotExist:
+        return JsonResponse({'errors': ['No such event']}, status=404)
+
+    if event.creator_id != claims['sub']:
+        return JsonResponse({'errors': ['Unauthorized to update this event']}, status=401)
+
+    content = json.loads(request.body)
+
+    try:
+        existing_participant = Participant.objects.get(id=content['id'])
+    except:
+        return JsonResponse({'errors': ['Participant does not exist']}, status=404)
+
+    if existing_participant.event_id != event.id:
+        return JsonResponse({'errors': ['Participant does not belong to this event']}, status=400)
+
+    existing_participant.name = content['name']
+    existing_participant.email = content['email']
+    existing_participant.save()
+
+    return JsonResponse({})
