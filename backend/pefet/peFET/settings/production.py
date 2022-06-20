@@ -24,6 +24,8 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_HEADERS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://*.blender.eu.org']
+
 FRONTEND_URL = 'https://pefet.blender.eu.org'
 
 JWT_SECRET = config('JWT_SECRET', cast=lambda k: bytes(k, "utf-8"))
