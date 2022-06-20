@@ -55,7 +55,7 @@ export default function Qr(props) {
             <FaSolidTimes />
           </a>
         </div>
-        <img ref={qrImg} style={{"max-height": "100vh", "max-width": "100vw"}}/>
+        <img ref={qrImg} style={{"max-height": "100vh", "max-width": "100vw", "cursor": "none"}}/>
       </div>
     </>
   );
