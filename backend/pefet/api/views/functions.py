@@ -7,6 +7,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 
+import jwt
+
 from ..models import Event, Participant
 from ..helpers import auth, email
 
@@ -44,6 +46,10 @@ def send_emails(request, event_id):
     server.login('apikey', settings.SENDGRID_API_KEY)
 
     for participant in to_email:
+        portal_token = jwt.encode(
+            {'sub': participant.id}, settings.PARTICIPANT_JWT_SECRET, algorithm='HS256')
+        portal_url = f'{settings.FRONTEND_URL}/portal?token={portal_token}'
+
         msg = EmailMessage()
         msg['Subject'] = f'[peFET] {content["subject"]}'
         msg['From'] = 'peFET <pefet@blender.eu.org>'
@@ -53,13 +59,13 @@ def send_emails(request, event_id):
             name=participant.name,
             event_name=event.name,
             body=content['body'],
-            portal_link=settings.FRONTEND_URL
+            portal_link=portal_url
         )
         html_content = email.HTML_TEMPLATE.substitute(
             name=participant.name,
             event_name=event.name,
             body=content['body'],
-            portal_link=settings.FRONTEND_URL
+            portal_link=portal_url
         )
         msg.set_content(plain_content)
         msg.add_alternative(html_content, subtype="html")

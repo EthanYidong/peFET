@@ -14,7 +14,7 @@ class InvalidTokenError(Exception):
     pass
 
 
-def extract_claims(request):
+def extract_claims(request, secret=settings.JWT_SECRET):
     auth_header = request.META.get("HTTP_AUTHORIZATION")
     if auth_header is None:
         raise TokenMissingError
@@ -25,7 +25,7 @@ def extract_claims(request):
         raise TokenMissingError
 
     try:
-        claims = jwt.decode(token, settings.JWT_SECRET, ['HS256'])
+        claims = jwt.decode(token, secret, ['HS256'])
     except:
         raise InvalidTokenError
 

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from .views import account, event, functions
+from .views import account, event, functions, portal
 
 urlpatterns = [
     path('event/', include([
@@ -35,4 +35,7 @@ urlpatterns = [
         path('login', account.login),
         path('validate', account.validate),
     ])),
+    path('portal/', include([
+        path('qr_code', portal.qr_code),
+    ]))
 ]
