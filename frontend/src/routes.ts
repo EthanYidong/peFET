@@ -20,6 +20,15 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("@/pages/logout")),
   },
   {
+    path: "/portal",
+    children: [
+      {
+        path: "/",
+        component: lazy(() => import("@/pages/portal/home")),
+      }
+    ]
+  },
+  {
     path: "/dashboard",
     component: lazy(() => import("@/pages/dashboard/layout-dashboard")),
     data: EventsData,

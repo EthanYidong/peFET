@@ -5,7 +5,7 @@ import { Router } from "solid-app-router";
 import App from "./app";
 import { StorageProvider } from "@/lib/storage";
 import "./index.sass";
-import "./mirage";
+//import "./mirage";
 
 render(
   () => (

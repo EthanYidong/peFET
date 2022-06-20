@@ -1,4 +1,4 @@
-import { createSignal, createContext, createMemo, useContext } from "solid-js";
+import { createSignal, createContext, createMemo, useContext, createEffect } from "solid-js";
 import { useRouteData, RouteContextObj } from "solid-app-router";
 
 const EventContext = createContext<() => any>();
@@ -12,7 +12,7 @@ export function EventContextProvider(props) {
     let eventId = cur.params.id;
     while (!eventId && cur.child) {
       cur = cur.child;
-      eventId = cur.params.id;
+      eventId = parseInt(cur.params.id);
     }
     return eventId;
   });

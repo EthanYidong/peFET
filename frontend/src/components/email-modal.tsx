@@ -5,21 +5,22 @@ import {
   runWithOwner,
   createEffect,
   on,
+  untrack,
 } from "solid-js";
 import { useRouteData } from "solid-app-router";
 import { FaSolidTimes } from "solid-icons/fa";
 
 import { API_URL, useToken } from "@/lib/api";
-import { withOwner } from "@/lib/helpers";
+import { withOwner, onButton } from "@/lib/helpers";
+import { useEvent } from "@/lib/event";
 import { clickOutside, customFormHandler } from "@/lib/directives";
 
-async function emailReq(data, { owner }) {
+async function submitReq(data, { owner }) {
   const routeData: any = runWithOwner(owner, () => useRouteData());
+  const event = useEvent();
+
   const [token, _setToken, _eraseToken] = useToken(owner);
-  const fetchResp = await fetch(
-    `${API_URL}/session/${
-      routeData.session().session.slug
-    }/functions/send_emails`,
+  const fetchResp = await fetch(`${API_URL}/api/event/${event().id}/send_emails`, 
     {
       method: "POST",
       headers: {
@@ -41,21 +42,25 @@ async function emailReq(data, { owner }) {
 
 export default function EmailModal(props) {
   const routeData: any = useRouteData();
+  const event = useEvent();
 
   const [formData, setFormData] = createSignal(null);
-  const [emailData] = createResource(formData, withOwner(emailReq));
+  const [fetchData] = createResource(formData, withOwner(submitReq));
 
-  function onEmailFormSubmit(data) {
+  createEffect(on(fetchData, props.onClose, {defer: true}));
+  onButton("Escape", props.onClose);
+
+  function onFormSubmit(data) {
     setFormData({
       participants: props
         .selectedParticipants()
-        .map((participant) => participant["_id"]),
-      dry_run: data.dry_run === "on",
+        .map((participant) => participant.id),
+      ...data
     });
   }
 
   return (
-    <form use:customFormHandler={onEmailFormSubmit}>
+    <form use:customFormHandler={onFormSubmit}>
       <div class="modal is-active">
         <div class="modal-background"></div>
         <div class="modal-card" use:clickOutside={props.onClose}>
@@ -78,10 +83,18 @@ export default function EmailModal(props) {
               <h2 class="subtitle">Options</h2>
               <div class="field">
                 <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" name="dry_run" checked />
-                    Dry Run
+                  <label class="label">
+                    Subject
                   </label>
+                  <input class="input" type="text" name="subject" value={`FET test required for ${untrack(() => event().name)}`}/>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <label class="label">
+                    Body
+                  </label>
+                  <textarea class="textarea" name="body" rows="5"/>
                 </div>
               </div>
             </div>

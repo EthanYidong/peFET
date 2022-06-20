@@ -1,5 +1,5 @@
 // TODO: consolidate form code with create event form
-import { Show, createSignal, createResource, runWithOwner } from "solid-js";
+import { Show, createSignal, createResource, runWithOwner, createEffect } from "solid-js";
 import { useRouteData } from "solid-app-router";
 
 import date from "date-and-time";
@@ -39,6 +39,7 @@ export default function Settings() {
 
   const minDate = new Date();
   const maxDate = date.addYears(minDate, 1);
+  const eventDate = () => date.format(date.parse(event().date, "YYYY-MM-DDTHH:mm:ss"), "YYYY-MM-DD");
 
   function onFormSubmit(data) {
     setFormData({ id: event().id, ...data });
@@ -62,7 +63,7 @@ export default function Settings() {
                 name="date"
                 min={date.format(minDate, "YYYY-MM-DD")}
                 max={date.format(maxDate, "YYYY-MM-DD")}
-                value={event().date}
+                value={eventDate()}
               />
             </div>
           </div>
