@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import date
 import json
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 
 from ..models import Event, Participant
-from ..helpers import auth
+from ..helpers import auth, json_data
 
 
 @require_http_methods(['GET'])
@@ -20,17 +20,26 @@ def all(request):
 
 
 @require_http_methods(['POST'])
-def create(request):
+@json_data(schema={
+    'type': 'object',
+    'properties': {
+        'name': {'type': 'string'},
+        'date': {'type': 'string', 'format': 'date'},
+    },
+    'required': ['name', 'date']
+})
+def create(request, data):
     try:
         claims = auth.extract_claims(request)
     except:
         return JsonResponse({'errors': ['Invalid token']}, status=401)
 
-    content = json.loads(request.body)
+    try:
+        event_date = date.fromisoformat(data['date'])
+    except:
+        return JsonResponse({'errors': ['Invalid date']}, status=401)
 
-    event_date = datetime.strptime(content['date'], '%Y-%m-%d').date()
-
-    new_event = Event(name=content['name'],
+    new_event = Event(name=data['name'],
                       date=event_date, creator_id=claims['sub'])
     new_event.save()
 
@@ -38,13 +47,20 @@ def create(request):
 
 
 @require_http_methods(['POST'])
-def update(request, event_id):
+@require_http_methods(['POST'])
+@json_data(schema={
+    'type': 'object',
+    'properties': {
+        'name': {'type': 'string'},
+        'date': {'type': 'string', 'format': 'date'},
+    },
+    'required': ['name', 'date']
+})
+def update(request, event_id, data):
     try:
         claims = auth.extract_claims(request)
     except:
         return JsonResponse({'errors': ['Invalid token']}, status=401)
-
-    content = json.loads(request.body)
 
     try:
         existing_event = Event.objects.get(id=event_id)
@@ -54,8 +70,8 @@ def update(request, event_id):
     if existing_event.creator_id != claims['sub']:
         return JsonResponse({'errors': ['Unauthorized to update this event']}, status=401)
 
-    existing_event.name = content['name']
-    existing_event.date = datetime.strptime(content['date'], '%Y-%m-%d').date()
+    existing_event.name = data['name']
+    existing_event.date = date.fromisoformat(data['date'])
     existing_event.save()
 
     return JsonResponse({})

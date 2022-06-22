@@ -44,7 +44,7 @@ def qr_code(request):
     qr.make()
     img = qr.make_image()
 
-    response = HttpResponse(content_type="image/png")
+    response = HttpResponse(content_type='image/png')
     img.save(response)
 
     return response
@@ -83,14 +83,14 @@ def upload_image(request):
 
     partial_path = f'uploads/fet/{uuid.uuid4()}.png'
     full_path = settings.MEDIA_ROOT / partial_path
-    image.save(full_path, "PNG")
+    image.save(full_path, 'PNG')
 
     new_upload = UploadedFetImage(
         participant_id=participant.id, image=partial_path)
     new_upload.save()
 
     if not qr_data:
-        return JsonResponse({"errors": ["QR code was not found in image"]}, status=400)
+        return JsonResponse({'errors': ['QR code was not found in image']}, status=400)
 
     for qr in qr_data:
         try:
@@ -102,8 +102,8 @@ def upload_image(request):
                 participant.save()
                 return JsonResponse({})
             else:
-                return JsonResponse({"errors": ["QR code was too old"]}, status=400)
+                return JsonResponse({'errors': ['QR code was too old']}, status=400)
         except jwt.PyJWTError:
             pass
 
-    return JsonResponse({"errors": ["QR code was invalid"]}, status=400)
+    return JsonResponse({'errors': ['QR code was invalid']}, status=400)

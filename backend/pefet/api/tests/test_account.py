@@ -9,7 +9,7 @@ from ..models import User
 from ..views import account
 
 
-class AccountTest(TestCase):
+class AccountTestLogin(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
@@ -72,6 +72,16 @@ class AccountTest(TestCase):
         content = json.loads(resp.content)
 
         self.assertEqual(content['errors'], ['Invalid email format'])
+
+
+class AccountTestSignup(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create(
+            email='test@example.com', password=bcrypt.hashpw(b'password', bcrypt.gensalt()))
 
     def test_signup_valid(self):
         req = self.factory.post('/api/account/signup', {

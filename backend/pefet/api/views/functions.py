@@ -50,8 +50,9 @@ def send_emails(request, event_id):
             {'sub': participant.id}, settings.PARTICIPANT_JWT_SECRET, algorithm='HS256')
         portal_url = f'{settings.FRONTEND_URL}/portal?token={portal_token}'
 
+        subject = content['subject']
         msg = EmailMessage()
-        msg['Subject'] = f'[peFET] {content["subject"]}'
+        msg['Subject'] = f'[peFET] {subject}'
         msg['From'] = 'peFET <pefet@blender.eu.org>'
         msg['To'] = f'{participant.name} <{participant.email}>'
 

@@ -14,12 +14,12 @@ from ..helpers import auth, json_data
 
 @require_http_methods(['POST'])
 @json_data(schema={
-    "type": "object",
-    "properties": {
-        "email": {"type": "string"},
-        "password": {"type": "string"},
+    'type': 'object',
+    'properties': {
+        'email': {'type': 'string'},
+        'password': {'type': 'string'},
     },
-    "required": ["email", "password"]
+    'required': ['email', 'password']
 })
 def signup(request, data):
     if User.objects.filter(email=data['email']).exists():
@@ -43,12 +43,12 @@ def signup(request, data):
 
 @require_http_methods(['POST'])
 @json_data(schema={
-    "type": "object",
-    "properties": {
-        "email": {"type": "string"},
-        "password": {"type": "string"},
+    'type': 'object',
+    'properties': {
+        'email': {'type': 'string'},
+        'password': {'type': 'string'},
     },
-    "required": ["email", "password"]
+    'required': ['email', 'password']
 })
 def login(request, data):
     try:
