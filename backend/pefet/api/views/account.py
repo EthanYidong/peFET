@@ -16,7 +16,7 @@ def signup(request):
     content = json.loads(request.body)
 
     if User.objects.filter(email=content['email']).exists():
-        return JsonResponse({'errors': ['User already exists']}, status=401)
+        return JsonResponse({'errors': ['User already exists']}, status=400)
 
     new_user = User(email=content['email'], password=bcrypt.hashpw(
         bytes(content['password'], 'utf-8'), bcrypt.gensalt()))
