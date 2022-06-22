@@ -77,7 +77,6 @@ class EventTestCreate(TestCase):
 
         self.assertEqual(content['id'], new_event.id)
 
-
     def test_create_event_invalid_date(self):
         req = self.factory.post(
             '/api/event/create', {'name': 'New Testing Event', 'date': '01-01-3000'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
@@ -87,7 +86,8 @@ class EventTestCreate(TestCase):
         self.assertEqual(resp.status_code, 400)
         content = json.loads(resp.content)
 
-        self.assertEqual(content['errors'], ['Invalid JSON: \'01-01-3000\' is not a \'date\''])
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'01-01-3000\' is not a \'date\''])
 
 
 class EventTestUpdate(TestCase):
@@ -105,7 +105,6 @@ class EventTestUpdate(TestCase):
         cls.eventDate = date.today()
         cls.event = Event.objects.create(
             name='Testing Event', date=cls.eventDate, creator=cls.user)
-
 
     def test_update_event(self):
         newEventDate = self.eventDate + timedelta(days=1)
@@ -133,4 +132,5 @@ class EventTestUpdate(TestCase):
         self.assertEqual(resp.status_code, 400)
         content = json.loads(resp.content)
 
-        self.assertEqual(content['errors'], ['Invalid JSON: \'01-01-3000\' is not a \'date\''])
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'01-01-3000\' is not a \'date\''])

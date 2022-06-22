@@ -15,7 +15,8 @@ def json_data(schema=None):
 
             if schema:
                 try:
-                    validate(instance=data, schema=schema, format_checker=draft7_format_checker)
+                    validate(instance=data, schema=schema,
+                             format_checker=draft7_format_checker)
                 except Exception as e:
                     return JsonResponse({'errors': [f'Invalid JSON: {e.message}']}, status=400)
             return func(request, *args, data=data, **kwargs)
