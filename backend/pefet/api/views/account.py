@@ -6,6 +6,7 @@ from django.conf import settings
 
 import bcrypt
 import jwt
+from email_validator import validate_email
 
 from ..models import User
 from ..helpers import auth, json_data
@@ -24,7 +25,12 @@ def signup(request, data):
     if User.objects.filter(email=data['email']).exists():
         return JsonResponse({'errors': ['User already exists']}, status=400)
 
-    new_user = User(email=data['email'], password=bcrypt.hashpw(
+    try:
+        email = validate_email(data['email'], check_deliverability=False).email
+    except:
+        return JsonResponse({'errors': ['Invalid email format']}, status=400)
+
+    new_user = User(email=email, password=bcrypt.hashpw(
         bytes(data['password'], 'utf-8'), bcrypt.gensalt()))
 
     new_user.save()
@@ -46,7 +52,12 @@ def signup(request, data):
 })
 def login(request, data):
     try:
-        existing_user = User.objects.get(email=data['email'])
+        email = validate_email(data['email'], check_deliverability=False).email
+    except:
+        return JsonResponse({'errors': ['Invalid email format']}, status=400)
+
+    try:
+        existing_user = User.objects.get(email=email)
     except User.DoesNotExist:
         return JsonResponse({'errors': ['User with that email does not exist']}, status=401)
 
