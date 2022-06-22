@@ -8,18 +8,24 @@ import bcrypt
 import jwt
 
 from ..models import User
-from ..helpers import auth
+from ..helpers import auth, json_data
 
 
 @require_http_methods(['POST'])
-def signup(request):
-    content = json.loads(request.body)
-
-    if User.objects.filter(email=content['email']).exists():
+@json_data(schema={
+    "type": "object",
+    "properties": {
+        "email": {"type": "string"},
+        "password": {"type": "string"},
+    },
+    "required": ["email", "password"]
+})
+def signup(request, data):
+    if User.objects.filter(email=data['email']).exists():
         return JsonResponse({'errors': ['User already exists']}, status=400)
 
-    new_user = User(email=content['email'], password=bcrypt.hashpw(
-        bytes(content['password'], 'utf-8'), bcrypt.gensalt()))
+    new_user = User(email=data['email'], password=bcrypt.hashpw(
+        bytes(data['password'], 'utf-8'), bcrypt.gensalt()))
 
     new_user.save()
 
@@ -30,15 +36,21 @@ def signup(request):
 
 
 @require_http_methods(['POST'])
-def login(request):
-    content = json.loads(request.body)
-
+@json_data(schema={
+    "type": "object",
+    "properties": {
+        "email": {"type": "string"},
+        "password": {"type": "string"},
+    },
+    "required": ["email", "password"]
+})
+def login(request, data):
     try:
-        existing_user = User.objects.get(email=content['email'])
+        existing_user = User.objects.get(email=data['email'])
     except User.DoesNotExist:
         return JsonResponse({'errors': ['User with that email does not exist']}, status=401)
 
-    if not bcrypt.checkpw(bytes(content['password'], 'utf-8'), existing_user.password):
+    if not bcrypt.checkpw(bytes(data['password'], 'utf-8'), existing_user.password):
         return JsonResponse({'errors': ['Password is incorrect']}, status=401)
 
     encoded_jwt = jwt.encode(
