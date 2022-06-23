@@ -126,11 +126,16 @@ def create_participant(request, event_id, data):
     except:
         return JsonResponse({'errors': ['Invalid email format']}, status=400)
 
+    if Participant.objects.filter(event_id=event.id, email=email).count != 0:
+        return JsonResponse({'errors': ['Participant with that email already exists']}, status=400)
+
     new_participant = Participant(
-        name=data['name'], email=data['email'], event_id=event.id)
+        name=data['name'], email=email, event_id=event.id)
     new_participant.save()
 
     return JsonResponse({'id': new_participant.id}, safe=False)
+
+@require_http_methods(['POST'])
 
 
 @require_http_methods(['POST'])
