@@ -15,6 +15,8 @@ import { withOwner, onButton } from "@/lib/helpers";
 import { useEvent } from "@/lib/event";
 import { clickOutside, customFormHandlerRaw } from "@/lib/directives";
 
+import Errors from "@/components/errors";
+
 async function submitReq(data, { owner }) {
   const location = runWithOwner(owner, useLocation);
 
@@ -61,6 +63,7 @@ export default function Picture(props) {
             </a>
           </header>
           <section class="modal-card-body">
+          <Errors errors={fetchData.error?.errors}></Errors>
             <div class="box">
               <h2 class="subtitle">Choose / Take Picture</h2>
               <div class="file">

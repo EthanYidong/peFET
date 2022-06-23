@@ -19,6 +19,7 @@ import { API_URL, useToken } from "@/lib/api";
 import ParticipantTableRow from "@/components/participant-table-row";
 import EmailDropdown from "@/components/email-dropdown";
 import EmailModal from "@/components/email-modal";
+import Errors from "@/components/errors";
 
 async function submitReq(data, { owner }) {
   const [token, _setToken, _eraseToken] = useToken(owner);
@@ -103,6 +104,7 @@ export default function Home() {
 
   return (
     <>
+      <Errors errors={fetchData.error?.errors}></Errors>
       <Show when={emailModal()}>
         <EmailModal
           onClose={() => setEmailModal(false)}
