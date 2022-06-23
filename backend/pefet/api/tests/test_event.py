@@ -22,10 +22,16 @@ class EventTestAll(TestCase):
     def setUpTestData(cls):
         cls.user = User.objects.create(
             email='test@example.com', password=bcrypt.hashpw(b'password', bcrypt.gensalt()))
+        
+        cls.user2 = User.objects.create(
+            email='test2@example.com', password=bcrypt.hashpw(b'password', bcrypt.gensalt()))
 
         cls.eventDate = date.today()
+
         cls.event = Event.objects.create(
             name='Testing Event', date=cls.eventDate, creator=cls.user)
+        cls.event2 = Event.objects.create(
+            name='Testing Event 2', date=cls.eventDate, creator=cls.user2)
 
     def test_get_all_events(self):
         req = self.factory.get(
@@ -97,10 +103,17 @@ class EventTestUpdate(TestCase):
                            settings.JWT_SECRET, algorithm='HS256')
         self.authorization = f'Bearer {token}'
 
+        token2 = jwt.encode({'sub': self.user2.id},
+                           settings.JWT_SECRET, algorithm='HS256')
+        self.authorization2 = f'Bearer {token2}'
+
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create(
             email='test@example.com', password=bcrypt.hashpw(b'password', bcrypt.gensalt()))
+
+        cls.user2 = User.objects.create(
+            email='test2@example.com', password=bcrypt.hashpw(b'password', bcrypt.gensalt()))
 
         cls.eventDate = date.today()
         cls.event = Event.objects.create(
@@ -120,6 +133,19 @@ class EventTestUpdate(TestCase):
         new_event = Event.objects.get(id=self.event.id)
         self.assertEqual(new_event.name, 'New Testing Event')
         self.assertEqual(new_event.date, newEventDate)
+
+    def test_update_event_wrong_user(self):
+        newEventDate = self.eventDate + timedelta(days=1)
+
+        req = self.factory.post(
+            f'/api/event/{self.event.id}/update', {'name': 'New Testing Event', 'date': newEventDate.isoformat()}, 'application/json', HTTP_AUTHORIZATION=self.authorization2)
+
+        resp = event.update(req, self.event.id)
+
+        self.assertEqual(resp.status_code, 401)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], ['Unauthorized to update this event'])
 
     def test_update_event_invalid_date(self):
         newEventDate = self.eventDate + timedelta(days=1)

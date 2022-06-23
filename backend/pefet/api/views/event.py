@@ -4,6 +4,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 
+from email_validator import validate_email
+
 from ..models import Event, Participant
 from ..helpers import auth, json_data
 
@@ -97,7 +99,15 @@ def read_participants(request, event_id):
 
 
 @require_http_methods(['POST'])
-def create_participant(request, event_id):
+@json_data(schema={
+    'type': 'object',
+    'properties': {
+        'name': {'type': 'string'},
+        'email': {'type': 'string'},
+    },
+    'required': ['name', 'email']
+})
+def create_participant(request, event_id, data):
     try:
         claims = auth.extract_claims(request)
     except:
@@ -111,10 +121,13 @@ def create_participant(request, event_id):
     if event.creator_id != claims['sub']:
         return JsonResponse({'errors': ['Unauthorized to update this event']}, status=401)
 
-    content = json.loads(request.body)
+    try:
+        email = validate_email(data['email'], check_deliverability=False).email
+    except:
+        return JsonResponse({'errors': ['Invalid email format']}, status=400)
 
     new_participant = Participant(
-        name=content['name'], email=content['email'], event_id=event.id)
+        name=data['name'], email=data['email'], event_id=event.id)
     new_participant.save()
 
     return JsonResponse({'id': new_participant.id}, safe=False)
