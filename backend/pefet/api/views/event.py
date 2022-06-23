@@ -126,7 +126,7 @@ def create_participant(request, event_id, data):
     except:
         return JsonResponse({'errors': ['Invalid email format']}, status=400)
 
-    if Participant.objects.filter(event_id=event.id, email=email).count != 0:
+    if Participant.objects.filter(event_id=event.id, email=email).count() != 0:
         return JsonResponse({'errors': ['Participant with that email already exists']}, status=400)
 
     new_participant = Participant(
@@ -135,11 +135,17 @@ def create_participant(request, event_id, data):
 
     return JsonResponse({'id': new_participant.id}, safe=False)
 
-@require_http_methods(['POST'])
-
 
 @require_http_methods(['POST'])
-def update_participant(request, event_id, participant_id):
+@json_data(schema={
+    'type': 'object',
+    'properties': {
+        'name': {'type': 'string'},
+        'email': {'type': 'string'},
+    },
+    'required': ['name', 'email']
+})
+def update_participant(request, event_id, participant_id, data):
     try:
         claims = auth.extract_claims(request)
     except:
@@ -161,10 +167,17 @@ def update_participant(request, event_id, participant_id):
     if existing_participant.event_id != event.id:
         return JsonResponse({'errors': ['Participant does not belong to this event']}, status=400)
 
-    content = json.loads(request.body)
+    try:
+        email = validate_email(data['email'], check_deliverability=False).email
+    except:
+        return JsonResponse({'errors': ['Invalid email format']}, status=400)
 
-    existing_participant.name = content['name']
-    existing_participant.email = content['email']
+    if Participant.objects.filter(event_id=event.id, email=email).count() != 0:
+        return JsonResponse({'errors': ['Participant with that email already exists']}, status=400)
+
+
+    existing_participant.name = data['name']
+    existing_participant.email = data['email']
     existing_participant.save()
 
     return JsonResponse({})

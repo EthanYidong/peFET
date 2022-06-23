@@ -4,6 +4,7 @@ import {
   createSignal,
   createResource,
   runWithOwner,
+  createEffect,
 } from "solid-js";
 import { useRouteData } from "solid-app-router";
 import { FaSolidEdit, FaSolidEllipsisH, FaSolidSave } from "solid-icons/fa";
@@ -42,6 +43,10 @@ async function submitReq(data, { owner }) {
 export default function ParticipantTableRow(props) {
   const [formData, setFormData] = createSignal(null);
   const [fetchData] = createResource(formData, withOwner(submitReq));
+
+  createEffect(() => {
+    props.onError(fetchData.error?.errors ?? []);
+  })
 
   let editForm;
 

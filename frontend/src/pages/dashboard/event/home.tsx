@@ -62,6 +62,8 @@ export default function Home() {
 
   const [emailModal, setEmailModal] = createSignal(false);
 
+  const [editErrors, setEditErrors] = createSignal([]);
+
   const filteredParticipants = createMemo(
     () => routeData.event()?.participants
   );
@@ -99,12 +101,13 @@ export default function Home() {
 
   function onFormSubmit(data, { form }) {
     form.reset();
+    setEditErrors([]);
     setFormData({ ...data });
   }
 
   return (
     <>
-      <Errors errors={fetchData.error?.errors}></Errors>
+      <Errors errors={[...(fetchData.error?.errors ?? []), ...editErrors()]}></Errors>
       <Show when={emailModal()}>
         <EmailModal
           onClose={() => setEmailModal(false)}
@@ -183,6 +186,7 @@ export default function Home() {
                         (e.target as HTMLInputElement).checked
                       )
                     }
+                    onError={setEditErrors}
                   />
                 )}
               </For>
