@@ -1,5 +1,6 @@
 from datetime import date
 import json
+import csv
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -134,6 +135,65 @@ def create_participant(request, event_id, data):
     new_participant.save()
 
     return JsonResponse({'id': new_participant.id}, safe=False)
+
+
+@require_http_methods(['POST'])
+def create_participants_csv(request, event_id):
+    try:
+        claims = auth.extract_claims(request)
+    except:
+        return JsonResponse({'errors': ['Invalid token']}, status=401)
+
+    try:
+        event = Event.objects.get(id=event_id)
+    except Event.DoesNotExist:
+        return JsonResponse({'errors': ['No such event']}, status=404)
+
+    if event.creator_id != claims['sub']:
+        return JsonResponse({'errors': ['Unauthorized to update this event']}, status=401)
+
+    uploaded_file = request.FILES['csv']
+
+    if uploaded_file.size >= 1024 * 1024 * 16:
+        return JsonResponse({'errors': ['Data is too large']}, status=413)
+
+    file_buf = bytearray([])
+    for chunk in uploaded_file.chunks():
+        file_buf.extend(chunk)
+
+    file_data = file_buf.decode('utf-8').splitlines()
+
+    data_reader = csv.reader(file_data)
+
+    errors = []
+
+    for row in data_reader:
+        name = row[0]
+        email = row[1]
+
+        valid = True
+
+        if not name or not email:
+            continue
+
+        try:
+            email = validate_email(email, check_deliverability=False).email
+        except:
+            valid = False
+            errors.append(f'[{email}] Invalid email format')
+
+        if Participant.objects.filter(event_id=event.id, email=email).count() != 0:
+            valid = False
+            errors.append(f'[{email}] Participant with that email already exists')
+
+        if valid:
+            new_participant = Participant(
+                name=name, email=email, event_id=event.id)
+            new_participant.save()
+
+    status = 200 if not errors else 400
+
+    return JsonResponse({ 'errors': errors }, status=status)
 
 
 @require_http_methods(['POST'])

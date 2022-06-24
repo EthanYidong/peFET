@@ -6,6 +6,7 @@ import {
   createSelector,
   createMemo,
   runWithOwner,
+  createEffect,
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useRouteData } from "solid-app-router";
@@ -18,6 +19,7 @@ import { withOwner } from "@/lib/helpers";
 import { API_URL, useToken } from "@/lib/api";
 import ParticipantTableRow from "@/components/participant-table-row";
 import EmailDropdown from "@/components/email-dropdown";
+import UploadDropdown from "@/components/upload-dropdown";
 import EmailModal from "@/components/email-modal";
 import Errors from "@/components/errors";
 
@@ -63,6 +65,9 @@ export default function Home() {
   const [emailModal, setEmailModal] = createSignal(false);
 
   const [editErrors, setEditErrors] = createSignal([]);
+  const [uploadErrors, setUploadErrors] = createSignal([]);
+
+  const allErrors = createMemo(() => [...(fetchData.error?.errors ?? []), ...editErrors(), ...uploadErrors()]);
 
   const filteredParticipants = createMemo(
     () => routeData.event()?.participants
@@ -101,13 +106,12 @@ export default function Home() {
 
   function onFormSubmit(data, { form }) {
     form.reset();
-    setEditErrors([]);
     setFormData({ ...data });
   }
 
   return (
     <>
-      <Errors errors={[...(fetchData.error?.errors ?? []), ...editErrors()]}></Errors>
+      <Errors errors={allErrors()}></Errors>
       <Show when={emailModal()}>
         <EmailModal
           onClose={() => setEmailModal(false)}
@@ -119,6 +123,9 @@ export default function Home() {
         <div class="level-left">
           <div class="level-item">
             <EmailDropdown openEmailModal={setEmailModal} />
+          </div>
+          <div class="level-item">
+            <UploadDropdown onError={setUploadErrors} refetchEvent={routeData.refetchEvent}/>
           </div>
         </div>
         <div class="level-right"></div>
