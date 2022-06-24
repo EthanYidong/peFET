@@ -81,6 +81,14 @@ export default function Home() {
           </div>
         </form>
       </div>
+
+      <div class="box">
+        <h4 class="title is-4">Instructions</h4>
+        <p>
+          For CSV upload, there should be only two columns with no headers.
+          The leftmost column should have the names, and the other the emails of your participants.
+        </p>
+      </div>
     </>
   );
 }
