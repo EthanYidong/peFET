@@ -95,6 +95,136 @@ class EventTestCreate(TestCase):
         self.assertEqual(content['errors'], [
                          'Invalid JSON: \'01-01-3000\' is not a \'date\''])
 
+    def test_create_event_invalid_date_wrong_order(self):
+        # Date should be in YYYY-MM-DD, DD-MM-YYYY is the wrong order
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '01-01-2023'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'01-01-2023\' is not a \'date\''])
+    
+    def test_create_event_invalid_date_13_month(self):
+        # Date should be in YYYY-MM-DD, 13th month doesn't exist
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '2023-13-01'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'2023-13-01\' is not a \'date\''])
+    
+    def test_create_event_invalid_date_31_april(self):
+        # Date should be in YYYY-MM-DD, 31 April doesn't exist
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '2023-04-31'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'2023-04-31\' is not a \'date\''])
+    
+    def test_create_event_invalid_date_non_leap_year(self):
+        # 29 Feb 2023 doesn't exist because 2023 is not a leap year
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '2023-02-29'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'2023-02-29\' is not a \'date\''])
+    
+    def test_create_event_invalid_date_non_leap_year_2100(self):
+        # 29 Feb 2100 doesn't exist because 2100 is not a leap year (divisible by 100 but not 400)
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '2100-02-29'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'2100-02-29\' is not a \'date\''])
+    
+    def test_create_event_invalid_date_year_10000(self):
+        # Date doesn't exist because it's too far in the future / only 4 year digits allowed
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '10000-01-01'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'10000-01-01\' is not a \'date\''])
+    
+    def test_create_event_invalid_dd_one_digit(self):
+        # Date doesn't exist because DD should be 2 digits
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '2023-01-1'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'2023-01-1\' is not a \'date\''])
+    
+    def test_create_event_invalid_mm_one_digit(self):
+        # Date doesn't exist because MM should be 2 digits
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '2023-1-01'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'2023-1-01\' is not a \'date\''])
+    
+    def test_create_event_invalid_yyyy_two_digits(self):
+        # Date doesn't exist because YYYY should be 4 digits
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': '23-01-01'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'23-01-01\' is not a \'date\''])
+    
+    def test_create_event_invalid_date_blank(self):
+        # Blank date is invalid
+        req = self.factory.post(
+            '/api/event/create', {'name': 'New Testing Event', 'date': ''}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.create(req)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'\' is not a \'date\''])
+
 
 class EventTestUpdate(TestCase):
     def setUp(self):
@@ -160,3 +290,63 @@ class EventTestUpdate(TestCase):
 
         self.assertEqual(content['errors'], [
                          'Invalid JSON: \'01-01-3000\' is not a \'date\''])
+    
+    def test_update_event_invalid_date_DDMMYYYY(self):
+        # 01-01-2023 is not a valid date because the format is YYYY-MM-DD
+        newEventDate = self.eventDate + timedelta(days=1)
+
+        req = self.factory.post(
+            f'/api/event/{self.event.id}/update', {'name': 'New Testing Event', 'date': '01-01-2023'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.update(req, self.event.id)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'01-01-2023\' is not a \'date\''])
+    
+    def test_update_event_invalid_date_non_leap_year(self):
+        # 2023-02-29 is not a valid date because 2023 is not a leap year
+        newEventDate = self.eventDate + timedelta(days=1)
+
+        req = self.factory.post(
+            f'/api/event/{self.event.id}/update', {'name': 'New Testing Event', 'date': '2023-02-29'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.update(req, self.event.id)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'2023-02-29\' is not a \'date\''])
+
+    def test_update_event_invalid_date_year_0000(self):
+        # 0000-01-01 is not a valid date (whereas 0001-01-01 is valid)
+        newEventDate = self.eventDate + timedelta(days=1)
+
+        req = self.factory.post(
+            f'/api/event/{self.event.id}/update', {'name': 'New Testing Event', 'date': '0000-01-01'}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.update(req, self.event.id)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'0000-01-01\' is not a \'date\''])
+    
+    def test_update_event_invalid_date_blank(self):
+        # blank date is invalid
+        newEventDate = self.eventDate + timedelta(days=1)
+
+        req = self.factory.post(
+            f'/api/event/{self.event.id}/update', {'name': 'New Testing Event', 'date': ''}, 'application/json', HTTP_AUTHORIZATION=self.authorization)
+
+        resp = event.update(req, self.event.id)
+
+        self.assertEqual(resp.status_code, 400)
+        content = json.loads(resp.content)
+
+        self.assertEqual(content['errors'], [
+                         'Invalid JSON: \'\' is not a \'date\''])
