@@ -2,12 +2,13 @@ from datetime import date
 import json
 import csv
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
 
 from email_validator import validate_email
+from PIL import Image
 
-from ..models import Event, Participant
+from ..models import Event, Participant, UploadedFetImage
 from ..helpers import auth, json_data
 
 
@@ -241,3 +242,40 @@ def update_participant(request, event_id, participant_id, data):
     existing_participant.save()
 
     return JsonResponse({})
+    
+
+@require_http_methods(['GET'])
+def get_participant_submission(request, event_id, participant_id):
+    try:
+        claims = auth.extract_claims(request)
+    except:
+        return JsonResponse({'errors': ['Invalid token']}, status=401)
+
+    try:
+        event = Event.objects.get(id=event_id)
+    except Event.DoesNotExist:
+        return JsonResponse({'errors': ['No such event']}, status=404)
+
+    if event.creator_id != claims['sub']:
+        return JsonResponse({'errors': ['Unauthorized to read this event']}, status=401)
+
+    try:
+        existing_participant = Participant.objects.get(id=participant_id)
+    except:
+        return JsonResponse({'errors': ['Participant does not exist']}, status=404)
+
+    if existing_participant.event_id != event.id:
+        return JsonResponse({'errors': ['Participant does not belong to this event']}, status=400)
+
+    upload = UploadedFetImage.objects.filter(participant=existing_participant).order_by("-created_at").first()
+
+    if upload is None:
+        return JsonResponse({'errors': ['Participant has not uploaded any images']}, status=404)
+
+    upload_image = Image.open(upload.image)
+
+    response = HttpResponse(content_type='image/jpeg')
+    upload_image.save(response, format='JPEG')
+
+    return response
+

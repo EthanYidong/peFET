@@ -15,6 +15,7 @@ from pyzbar.pyzbar import decode as decodeQr
 
 from ..models import Participant, UploadedFetImage
 from ..helpers import auth
+from ..cv import detect
 
 
 @require_http_methods(['GET'])
@@ -75,6 +76,11 @@ def upload_image(request):
     image = Image.open(BytesIO(image_buf))
 
     qr_data = decodeQr(image)
+    test_data = detect.extractTestImg(image)
+    if test_data is None:
+        print("no test")
+    else:
+        print("test detected")
 
     resize_ratio = max(image.width, image.height) / settings.MAX_IMAGE_DIMS
     if resize_ratio > 1:

@@ -30,6 +30,7 @@ urlpatterns = [
                 path('create_csv', event.create_participants_csv),
                 path('<int:participant_id>/', include([
                     path('update', event.update_participant),
+                    path('get_submission', event.get_participant_submission),
                 ])),
             ])),
         ]))

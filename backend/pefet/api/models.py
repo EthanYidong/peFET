@@ -44,7 +44,9 @@ class Participant(models.Model):
 
 class UploadedFetImage(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     image = models.ImageField(upload_to='uploads/fet/')
+
 
     def __str__(self):
         return self.image.url
