@@ -5,6 +5,7 @@ class User(models.Model):
     name = models.CharField(max_length=100, default="AnonymousUser")
     email = models.CharField(max_length=100, unique=True)
     password = models.BinaryField(max_length=60)
+    tutorial_complete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email

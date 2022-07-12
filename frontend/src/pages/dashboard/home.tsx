@@ -1,11 +1,13 @@
-import { createSignal, createResource, runWithOwner } from "solid-js";
+import { createSignal, createResource, runWithOwner, onMount } from "solid-js";
 import { useRouteData, useNavigate } from "solid-app-router";
 
 import date from "date-and-time";
 
 import { customFormHandler } from "@/lib/directives";
 import { API_URL, useToken } from "@/lib/api";
+import { steps } from "@/lib/tour";
 import { withOwner } from "@/lib/helpers";
+import SetTour from "@/components/set-tour";
 import Errors from "@/components/errors";
 
 async function submitReq(data, { owner }) {
@@ -46,8 +48,9 @@ export default function Home() {
 
   return (
     <>
+      <SetTour steps={steps.home}/>
       <Errors errors={fetchData.error?.errors}></Errors>
-      <div class="box">
+      <div class="box tour-create-new-event">
         <h4 class="title is-4">Create a New Event</h4>
         <form use:customFormHandler={onFormSubmit}>
           <div class="field">

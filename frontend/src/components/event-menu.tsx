@@ -13,7 +13,7 @@ export default function EventMenu(props) {
       <Show when={event()?.id == props.event.id}>
         <ul>
           <li>
-            <MenuLink href={`/dashboard/event/${props.event.id}/settings`}>
+            <MenuLink href={`/dashboard/event/${props.event.id}/settings`} class="tour-settings">
               Settings
             </MenuLink>
           </li>

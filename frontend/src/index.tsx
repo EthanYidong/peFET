@@ -4,6 +4,8 @@ import { Router } from "solid-app-router";
 
 import App from "./app";
 import { StorageProvider } from "@/lib/storage";
+import { ShepherdProvider } from "@/lib/shepherd";
+import { tourOptions, steps } from "@/lib/tour";
 import "./index.sass";
 //import "./mirage";
 
@@ -11,7 +13,9 @@ render(
   () => (
     <StorageProvider>
       <Router>
-        <App />
+        <ShepherdProvider tourOptions={tourOptions}>
+          <App />
+        </ShepherdProvider>
       </Router>
     </StorageProvider>
   ),

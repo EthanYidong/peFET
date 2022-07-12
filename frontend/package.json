@@ -23,6 +23,7 @@
   "dependencies": {
     "@solid-primitives/storage": "^1.3.0",
     "prettier": "^2.7.0",
+    "shepherd.js": "^10.0.0",
     "solid-app-router": "github:EthanYidong/solid-app-router#globalParams",
     "solid-js": "^1.4.2"
   }

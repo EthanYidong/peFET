@@ -7,6 +7,7 @@ import {
   createMemo,
   runWithOwner,
   createEffect,
+  getOwner,
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useRouteData } from "solid-app-router";
@@ -14,6 +15,7 @@ import { useRouteData } from "solid-app-router";
 import { FaSolidEdit, FaSolidPlusCircle } from "solid-icons/fa";
 
 import { customFormHandler } from "@/lib/directives";
+import { steps } from "@/lib/tour";
 import { useEvent } from "@/lib/event";
 import { withOwner } from "@/lib/helpers";
 import { API_URL, useToken } from "@/lib/api";
@@ -21,6 +23,7 @@ import ParticipantTableRow from "@/components/participant-table-row";
 import EmailDropdown from "@/components/email-dropdown";
 import UploadDropdown from "@/components/upload-dropdown";
 import EmailModal from "@/components/email-modal";
+import SetTour from "@/components/set-tour";
 import Errors from "@/components/errors";
 
 async function submitReq(data, { owner }) {
@@ -50,6 +53,28 @@ async function submitReq(data, { owner }) {
   }
 }
 
+async function completeTutorial(owner) {
+  const [token, _setToken, _eraseToken] = useToken(owner);
+
+  const fetchResp = await fetch(
+    `${API_URL}/api/account/complete_tutorial`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token(),
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const fetchJSON = await fetchResp.json();
+  if (fetchResp.ok) {
+    return fetchJSON;
+  } else {
+    return Promise.reject(fetchJSON);
+  }
+}
+
 export default function Home() {
   const routeData: any = useRouteData();
   const event = useEvent();
@@ -68,6 +93,8 @@ export default function Home() {
   const [uploadErrors, setUploadErrors] = createSignal([]);
 
   const allErrors = createMemo(() => [...(fetchData.error?.errors ?? []), ...editErrors(), ...uploadErrors()]);
+
+  const owner = getOwner();
 
   const filteredParticipants = createMemo(
     () => routeData.event()?.participants
@@ -111,6 +138,7 @@ export default function Home() {
 
   return (
     <>
+      <SetTour steps={steps.dashboard} onComplete={() => completeTutorial(owner)}/>
       <Errors errors={allErrors()}></Errors>
       <Show when={emailModal()}>
         <EmailModal
@@ -121,10 +149,10 @@ export default function Home() {
       <h1 class="title">{event().name}</h1>
       <div class="level">
         <div class="level-left">
-          <div class="level-item">
+          <div class="level-item tour-send-emails">
             <EmailDropdown openEmailModal={setEmailModal} />
           </div>
-          <div class="level-item">
+          <div class="level-item tour-upload-csv">
             <UploadDropdown onError={setUploadErrors} refetchEvent={routeData.refetchEvent}/>
           </div>
         </div>
@@ -139,6 +167,7 @@ export default function Home() {
                 <th>
                   <input
                     type="checkbox"
+                    class="tour-select"
                     onClick={onAllCheckboxClick}
                     checked={allSelected()}
                   />
@@ -148,7 +177,7 @@ export default function Home() {
                 <th>Email</th>
                 <th>Status</th>
               </tr>
-              <tr>
+              <tr class="tour-manual-create">
                 <td></td>
                 <td>
                   <button

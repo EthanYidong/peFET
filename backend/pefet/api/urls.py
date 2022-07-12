@@ -37,7 +37,8 @@ urlpatterns = [
     path('account/', include([
         path('signup', account.signup),
         path('login', account.login),
-        path('validate', account.validate),
+        path('complete_tutorial', account.complete_tutorial),
+        path('me', account.me),
     ])),
     path('portal/', include([
         path('qr_code', portal.qr_code),

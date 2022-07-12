@@ -69,9 +69,22 @@ def login(request, data):
 
     return JsonResponse({'token': encoded_jwt})
 
+@require_http_methods(['POST'])
+def complete_tutorial(request):
+    try:
+        claims = auth.extract_claims(request)
+    except:
+        return JsonResponse({'errors': ['Invalid token']}, status=401)
+
+    existing_user = User.objects.get(id=claims['sub'])
+    existing_user.tutorial_complete = True
+    existing_user.save()
+
+    return JsonResponse({})
+
 
 @require_http_methods(['GET'])
-def validate(request):
+def me(request):
     try:
         claims = auth.extract_claims(request)
     except:
@@ -79,4 +92,4 @@ def validate(request):
 
     existing_user = User.objects.get(id=claims['sub'])
 
-    return JsonResponse({'id': existing_user.id})
+    return JsonResponse({'id': existing_user.id, 'tutorial_complete': existing_user.tutorial_complete})
