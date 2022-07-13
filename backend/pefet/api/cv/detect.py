@@ -1,6 +1,5 @@
 from enum import Enum, auto
 
-from tkinter import LAST
 from cv2 import boxPoints
 import numpy as np
 import imutils
