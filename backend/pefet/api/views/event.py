@@ -233,12 +233,12 @@ def update_participant(request, event_id, participant_id, data):
     except:
         return JsonResponse({'errors': ['Invalid email format']}, status=400)
 
-    if Participant.objects.filter(event_id=event.id, email=email).count() != 0:
+    if existing_participant.email != email and Participant.objects.filter(event_id=event.id, email=email).count() != 0:
         return JsonResponse({'errors': ['Participant with that email already exists']}, status=400)
 
 
     existing_participant.name = data['name']
-    existing_participant.email = data['email']
+    existing_participant.email = email
     existing_participant.save()
 
     return JsonResponse({})
