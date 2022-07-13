@@ -26,6 +26,7 @@ import EmailModal from "@/components/email-modal";
 import ParticipantModal from "@/components/participant-modal";
 import SetTour from "@/components/set-tour";
 import Errors from "@/components/errors";
+import Success from "@/components/success";
 
 async function submitReq(data, { owner }) {
   const [token, _setToken, _eraseToken] = useToken(owner);
@@ -90,6 +91,7 @@ export default function Home() {
 
   const [emailModal, setEmailModal] = createSignal(false);
   const [participantModal, setParticipantModal] = createSignal(null);
+  const [sentEmails, setSentEmails] = createSignal(false);
 
   const [editErrors, setEditErrors] = createSignal([]);
   const [uploadErrors, setUploadErrors] = createSignal([]);
@@ -142,12 +144,15 @@ export default function Home() {
     <>
       <SetTour steps={steps.dashboard} onComplete={() => completeTutorial(owner)}/>
       <Errors errors={allErrors()}></Errors>
+      <Show when={sentEmails()}>
+        <Success success={["Successfully sent emails"]}/>
+      </Show>
       <Show when={participantModal()}>
         <ParticipantModal onClose={() => setParticipantModal(null)} participant={participantModal}/>
       </Show>
       <Show when={emailModal()}>
         <EmailModal
-          onClose={() => setEmailModal(false)}
+          onClose={(v) => {setEmailModal(false); setSentEmails(v);}}
           selectedParticipants={selectedParticipants}
         />
       </Show>
@@ -155,7 +160,7 @@ export default function Home() {
       <div class="level">
         <div class="level-left">
           <div class="level-item tour-send-emails">
-            <EmailDropdown openEmailModal={setEmailModal} />
+            <EmailDropdown openEmailModal={() => {setEmailModal(true); setSentEmails(false);}} />
           </div>
           <div class="level-item tour-upload-csv">
             <UploadDropdown onError={setUploadErrors} refetchEvent={routeData.refetchEvent}/>

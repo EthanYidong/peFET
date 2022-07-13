@@ -40,7 +40,7 @@ export default function Home() {
               <button class="button is-large is-primary" onClick={() => setQr(true)}>Show QR Code</button>
             </div>
             <div class="column is-narrow">
-              <button class="button is-large is-info" onClick={() => setPicture(true)}>Take Picture</button>
+              <button class="button is-large is-info" onClick={() => {setPicture(true); setSubmitted(false);}}>Take Picture</button>
             </div>
           </div>
         </section>

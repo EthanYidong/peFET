@@ -13,7 +13,7 @@ export default function EmailDropdown(props) {
       }
       right={props.right}
     >
-      <a class="dropdown-item" onClick={() => props.openEmailModal(true)}>
+      <a class="dropdown-item" onClick={() => props.openEmailModal()}>
         Send to Selected
       </a>
     </Dropdown>
