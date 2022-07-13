@@ -87,7 +87,11 @@ export default function ParticipantTableRow(props) {
           </td>
           <td>{props.participant.name}</td>
           <td>{props.participant.email}</td>
-          <td>{props.participant.status}</td>
+          <td>
+            <Show when={props.participant.status === "Y"} fallback={props.participant.status}>
+              <a onClick={props.onOpen}>{props.participant.status}</a>
+            </Show>
+          </td>
         </tr>
       }
     >
@@ -123,7 +127,11 @@ export default function ParticipantTableRow(props) {
             form="editParticipantForm"
           />
         </td>
-        <td>{props.participant.status}</td>
+        <td>
+          <Show when={props.participant.status === "Y"} fallback={props.participant.status}>
+            <a onClick={props.onOpen}>{props.participant.status}</a>
+          </Show>
+        </td>
       </tr>
     </Show>
   );

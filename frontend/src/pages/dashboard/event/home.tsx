@@ -23,6 +23,7 @@ import ParticipantTableRow from "@/components/participant-table-row";
 import EmailDropdown from "@/components/email-dropdown";
 import UploadDropdown from "@/components/upload-dropdown";
 import EmailModal from "@/components/email-modal";
+import ParticipantModal from "@/components/participant-modal";
 import SetTour from "@/components/set-tour";
 import Errors from "@/components/errors";
 
@@ -88,6 +89,7 @@ export default function Home() {
   const [selected, setSelected] = createStore({} as any);
 
   const [emailModal, setEmailModal] = createSignal(false);
+  const [participantModal, setParticipantModal] = createSignal(null);
 
   const [editErrors, setEditErrors] = createSignal([]);
   const [uploadErrors, setUploadErrors] = createSignal([]);
@@ -140,6 +142,9 @@ export default function Home() {
     <>
       <SetTour steps={steps.dashboard} onComplete={() => completeTutorial(owner)}/>
       <Errors errors={allErrors()}></Errors>
+      <Show when={participantModal()}>
+        <ParticipantModal onClose={() => setParticipantModal(null)} participant={participantModal}/>
+      </Show>
       <Show when={emailModal()}>
         <EmailModal
           onClose={() => setEmailModal(false)}
@@ -209,7 +214,7 @@ export default function Home() {
             </thead>
             <tbody>
               <For each={routeData.event().participants}>
-                {(participant: any) => (
+                {(participant: any, index) => (
                   <ParticipantTableRow
                     participant={participant}
                     editing={isEditing(participant.id)}
@@ -221,6 +226,9 @@ export default function Home() {
                         participant.id,
                         (e.target as HTMLInputElement).checked
                       )
+                    }
+                    onOpen={
+                      () => setParticipantModal(participant)
                     }
                     onError={setEditErrors}
                   />
