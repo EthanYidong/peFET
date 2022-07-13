@@ -4,12 +4,14 @@ import { useLocation } from "solid-app-router";
 
 import Qr from "@/components/portal/qr";
 import Picture from "@/components/portal/picture";
+import Success from "@/components/success";
 
 export default function Home() {
   const location = useLocation();
 
   const [qr, setQr] = createSignal(false);
   const [picture, setPicture] = createSignal(false);
+  const [submitted, setSubmitted] = createSignal(false);
 
   createEffect(() => console.log(location.query.token));
 
@@ -21,9 +23,12 @@ export default function Home() {
         </Show>
       </Portal>
       <Show when={picture()}>
-        <Picture onClose={() => setPicture(false)}/>
+        <Picture onClose={(v) => {setPicture(false); setSubmitted(v);}}/>
       </Show>
       <Show when={!qr()}>
+        <Show when={submitted()}>
+          <Success success={["Successfully submitted!"]}/>
+        </Show>
         <section class="section">
           <h1 class="title">
             peFET submission portal

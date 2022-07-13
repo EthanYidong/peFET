@@ -44,8 +44,8 @@ export default function Picture(props) {
   const [formData, setFormData] = createSignal(null);
   const [fetchData] = createResource(formData, withOwner(submitReq));
 
-  createEffect(on(fetchData, props.onClose, {defer: true}));
-  onButton("Escape", props.onClose);
+  createEffect(on(fetchData, () => props.onClose(true), {defer: true}));
+  onButton("Escape", () => props.onClose(false));
 
   function onFormSubmit(data) {
     setFormData(data);
@@ -55,10 +55,10 @@ export default function Picture(props) {
     <form use:customFormHandlerRaw={onFormSubmit}>
       <div class="modal is-active">
         <div class="modal-background"></div>
-        <div class="modal-card" use:clickOutside={props.onClose}>
+        <div class="modal-card" use:clickOutside={() => props.onClose(false)}>
           <header class="modal-card-head">
             <p class="modal-card-title">Upload Image</p>
-            <a onClick={props.onClose}>
+            <a onClick={() => props.onClose(false)}>
               <FaSolidTimes />
             </a>
           </header>
