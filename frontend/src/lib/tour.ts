@@ -18,7 +18,7 @@ export const steps = {
         `
         <p>
           Welcome to peFET! To get started, create a new event by telling us it's name and event date!
-          Make sure that the name is correct, because it wil be shown to participants! (Don't worry, you can change it later.)
+          Make sure that the name is correct, because it will be shown to participants! (Don't worry, you can change it later.)
         </p>
         `
       ],
