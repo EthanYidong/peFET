@@ -61,6 +61,7 @@ def detect(img_data):
     cv2.drawContours(contour_mask, [largest_yellow_hull], -1, 255, cv2.FILLED)
     overlapping_mask = process_mask(cv2.bitwise_and(cv2.bitwise_not(yellow_mask), contour_mask))
     overlapping_contours = imutils.grab_contours(cv2.findContours(overlapping_mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE))
+
     largest_overlapping_contour = max(overlapping_contours, key=cv2.contourArea)
     overlapping_mask_rect = cv2.minAreaRect(largest_overlapping_contour)
 
@@ -169,6 +170,8 @@ def extractTestImg(img_data):
 
     # Find the largest area contour and the convex hull of that contour.
     yellow_contours = imutils.grab_contours(cv2.findContours(yellow_mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE))
+    if not yellow_contours:
+        return None
     largest_yellow_contour = max(yellow_contours, key=cv2.contourArea)
     largest_yellow_hull = cv2.convexHull(largest_yellow_contour, False)
 
@@ -184,6 +187,8 @@ def extractTestImg(img_data):
 
     overlapping_mask = process_mask(cv2.bitwise_and(cv2.bitwise_not(yellow_mask), contour_mask))
     overlapping_contours = imutils.grab_contours(cv2.findContours(overlapping_mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE))
+    if not overlapping_contours:
+        return None
     largest_overlapping_contour = max(overlapping_contours, key=cv2.contourArea)
     overlapping_mask_rect = cv2.minAreaRect(largest_overlapping_contour)
 

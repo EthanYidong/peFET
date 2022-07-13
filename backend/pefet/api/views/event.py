@@ -274,8 +274,8 @@ def get_participant_submission(request, event_id, participant_id):
 
     upload_image = Image.open(upload.image)
 
-    response = HttpResponse(content_type='image/jpeg')
-    upload_image.save(response, format='JPEG')
+    response = HttpResponse(content_type='image/png')
+    upload_image.save(response, format='PNG')
 
     return response
 
