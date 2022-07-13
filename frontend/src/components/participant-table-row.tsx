@@ -88,8 +88,8 @@ export default function ParticipantTableRow(props) {
           <td>{props.participant.name}</td>
           <td>{props.participant.email}</td>
           <td>
-            <Show when={props.participant.status === "Y"} fallback={props.participant.status}>
-              <a onClick={props.onOpen}>{props.participant.status}</a>
+            <Show when={props.participant.status === "Y"} fallback={"Not Submitted"}>
+              Submitted (<a onClick={props.onOpen}>view</a>)
             </Show>
           </td>
         </tr>
@@ -128,8 +128,8 @@ export default function ParticipantTableRow(props) {
           />
         </td>
         <td>
-          <Show when={props.participant.status === "Y"} fallback={props.participant.status}>
-            <a onClick={props.onOpen}>{props.participant.status}</a>
+          <Show when={props.participant.status === "Y"} fallback={"Not Submitted"}>
+            Submitted (<a onClick={props.onOpen}>view</a>)
           </Show>
         </td>
       </tr>
