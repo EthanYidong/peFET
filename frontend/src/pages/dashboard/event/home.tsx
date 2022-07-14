@@ -8,6 +8,7 @@ import {
   runWithOwner,
   createEffect,
   getOwner,
+  on,
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useRouteData } from "solid-app-router";
@@ -98,6 +99,8 @@ export default function Home() {
 
   const allErrors = createMemo(() => [...(fetchData.error?.errors ?? []), ...editErrors(), ...uploadErrors()]);
 
+  let createForm;
+
   const owner = getOwner();
 
   const filteredParticipants = createMemo(
@@ -135,10 +138,13 @@ export default function Home() {
     );
   }
 
-  function onFormSubmit(data, { form }) {
-    form.reset();
+  function onFormSubmit(data) {
     setFormData({ ...data });
   }
+
+  createEffect(on(fetchData, () => {
+    createForm.reset();
+  }, {defer: true}))
 
   function nextSubmission() {
     const cur = participantModal();
@@ -197,7 +203,7 @@ export default function Home() {
         </div>
         <div class="level-right"></div>
       </div>
-      <form id="createForm" use:customFormHandler={onFormSubmit} />
+      <form ref={createForm} id="createForm" use:customFormHandler={onFormSubmit} />
       <Show when={routeData.event()}>
         <div class="is-flex">
           <table class="table is-flex-grow-1">

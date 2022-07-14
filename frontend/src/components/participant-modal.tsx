@@ -67,8 +67,10 @@ export default function ParticipantModal(props) {
             <FaSolidTimes />
           </a>
         </header>
-        <section class="modal-card-body">
-          <img ref={subImg}></img>
+        <section class="modal-card-body" style={{"height": "100vh"}}>
+          <Show when={!fetchData.loading}>
+            <img ref={subImg}></img>
+          </Show>
         </section>
         <footer class="modal-card-foot">
           <div class="level fillwidth">
