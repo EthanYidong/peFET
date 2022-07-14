@@ -5,6 +5,7 @@ import numpy as np
 import imutils
 import cv2
 import pytesseract
+from PIL import Image
 
 from .rotated_rect_crop import crop_rotated_rectangle
 
@@ -206,4 +207,4 @@ def extractTestImg(img_data):
         if intersection is not None:
             test_rect = crop_rotated_rectangle(img, grey_rect)
 
-    return test_rect
+    return Image.fromarray(cv2.cvtColor(test_rect, cv2.COLOR_BGR2RGB))

@@ -76,11 +76,7 @@ def upload_image(request):
     image = Image.open(BytesIO(image_buf))
 
     qr_data = decodeQr(image)
-    test_data = detect.extractTestImg(image)
-    if test_data is None:
-        print("no test")
-    else:
-        print("test detected")
+    detected_image = detect.extractTestImg(image)
 
     resize_ratio = max(image.width, image.height) / settings.MAX_IMAGE_DIMS
     if resize_ratio > 1:
@@ -91,8 +87,15 @@ def upload_image(request):
     full_path = settings.MEDIA_ROOT / partial_path
     image.save(full_path, 'PNG')
 
+    detected_partial_path = None
+    if detected_image is not None:
+        detected_partial_path = f'uploads/fet/{uuid.uuid4()}.png'
+        detected_full_path = settings.MEDIA_ROOT / detected_partial_path
+        detected_image.save(detected_full_path, 'PNG')
+
+
     new_upload = UploadedFetImage(
-        participant_id=participant.id, image=partial_path)
+        participant_id=participant.id, original_image=partial_path, extracted_image=detected_partial_path)
     new_upload.save()
 
     if not qr_data:

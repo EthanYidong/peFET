@@ -1,6 +1,8 @@
 from datetime import date
 import json
 import csv
+import io
+import base64
 
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
@@ -272,10 +274,13 @@ def get_participant_submission(request, event_id, participant_id):
     if upload is None:
         return JsonResponse({'errors': ['Participant has not uploaded any images']}, status=404)
 
-    upload_image = Image.open(upload.image)
+    original_image = Image.open(upload.original_image)
 
-    response = HttpResponse(content_type='image/png')
-    upload_image.save(response, format='PNG')
+    original_image_arr = io.BytesIO()
+    original_image.save(original_image_arr, format='PNG')
 
-    return response
+    original_image_b64 = base64.b64encode(original_image_arr.getvalue())
+    return JsonResponse({
+        'original_image': str(original_image_b64, encoding='utf-8')
+    })
 

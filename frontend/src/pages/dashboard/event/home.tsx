@@ -140,6 +140,30 @@ export default function Home() {
     setFormData({ ...data });
   }
 
+  function nextSubmission() {
+    const cur = participantModal();
+    let check = cur + 1;
+    while (check < routeData.event().participants.length) {
+      if(routeData.event().participants[check].status === "Y") {
+        return check;
+      }
+      check ++;
+    }
+    return cur;
+  }
+
+  function prevSubmission() {
+    const cur = participantModal();
+    let check = cur - 1;
+    while (check >= 0) {
+      if(routeData.event().participants[check].status === "Y") {
+        return check;
+      }
+      check --;
+    }
+    return cur;
+  }
+
   return (
     <>
       <SetTour steps={steps.dashboard} onComplete={() => completeTutorial(owner)}/>
@@ -147,8 +171,13 @@ export default function Home() {
       <Show when={sentEmails()}>
         <Success success={["Successfully sent emails"]}/>
       </Show>
-      <Show when={participantModal()}>
-        <ParticipantModal onClose={() => setParticipantModal(null)} participant={participantModal}/>
+      <Show when={participantModal() !== null}>
+        <ParticipantModal
+          onClose={() => setParticipantModal(null)}
+          participant={() => routeData.event().participants[participantModal()]}
+          onNext={() => setParticipantModal(nextSubmission())}
+          onPrev={() => setParticipantModal(prevSubmission())}
+        />
       </Show>
       <Show when={emailModal()}>
         <EmailModal
@@ -233,7 +262,7 @@ export default function Home() {
                       )
                     }
                     onOpen={
-                      () => setParticipantModal(participant)
+                      () => setParticipantModal(index())
                     }
                     onError={setEditErrors}
                   />
