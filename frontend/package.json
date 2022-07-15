@@ -10,9 +10,13 @@
   "license": "CC BY-NC-ND",
   "devDependencies": {
     "@types/node": "^17.0.35",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "@typescript-eslint/parser": "^5.30.6",
     "bulma": "^0.9.4",
     "bulma-calendar": "^6.1.18",
     "date-and-time": "^2.3.1",
+    "eslint": "^8.19.0",
+    "eslint-plugin-solid": "^0.7.1",
     "miragejs": "^0.1.45",
     "sass": "^1.52.3",
     "solid-icons": "^0.4.13",

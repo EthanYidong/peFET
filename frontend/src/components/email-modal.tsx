@@ -2,12 +2,10 @@ import {
   For,
   createSignal,
   createResource,
-  runWithOwner,
   createEffect,
   on,
   untrack,
 } from "solid-js";
-import { useRouteData } from "solid-app-router";
 import { FaSolidTimes } from "solid-icons/fa";
 
 import { API_URL, useToken } from "@/lib/api";
@@ -16,7 +14,6 @@ import { useEvent } from "@/lib/event";
 import { clickOutside, customFormHandler } from "@/lib/directives";
 
 async function submitReq(data, { owner }) {
-  const routeData: any = runWithOwner(owner, () => useRouteData());
   const event = useEvent();
 
   const [token, _setToken, _eraseToken] = useToken(owner);
@@ -41,7 +38,6 @@ async function submitReq(data, { owner }) {
 }
 
 export default function EmailModal(props) {
-  const routeData: any = useRouteData();
   const event = useEvent();
 
   const [formData, setFormData] = createSignal(null);
@@ -62,7 +58,7 @@ export default function EmailModal(props) {
   return (
     <form use:customFormHandler={onFormSubmit}>
       <div class="modal is-active">
-        <div class="modal-background"></div>
+        <div class="modal-background" />
         <div class="modal-card" use:clickOutside={props.onClose}>
           <header class="modal-card-head">
             <p class="modal-card-title">Send Emails</p>

@@ -1,4 +1,4 @@
-import { createSignal, createResource, createEffect, untrack } from "solid-js";
+import { createSignal, createResource, createEffect } from "solid-js";
 import { useNavigate } from "solid-app-router";
 
 import { customFormHandler } from "@/lib/directives";
@@ -8,7 +8,7 @@ import Errors from "@/components/errors";
 
 async function submitReq(data) {
   // TODO: validate password
-  let fetchResp = await fetch(API_URL + "/api/account/signup", {
+  const fetchResp = await fetch(API_URL + "/api/account/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -16,7 +16,7 @@ async function submitReq(data) {
     body: JSON.stringify(data),
   });
 
-  let fetchJSON = await fetchResp.json();
+  const fetchJSON = await fetchResp.json();
 
   if (fetchResp.ok) {
     return fetchJSON;
@@ -63,18 +63,18 @@ export default function Signup() {
             <h1 class="title">Sign Up</h1>
             <Errors
               errors={[...(fetchData.error?.errors ?? []), ...localErrors()]}
-            ></Errors>
+            />
             <form use:customFormHandler={onFormSubmit}>
               <div class="field">
                 <label class="label">Email</label>
                 <div class="control">
-                  <input class="input" type="text" name="email"></input>
+                  <input class="input" type="text" name="email"/>
                 </div>
               </div>
               <div class="field">
                 <label class="label">Password</label>
                 <div class="control">
-                  <input class="input" type="password" name="password"></input>
+                  <input class="input" type="password" name="password"/>
                 </div>
               </div>
               <div class="field">
@@ -84,7 +84,7 @@ export default function Signup() {
                     class="input"
                     type="password"
                     name="repeatPassword"
-                  ></input>
+                  />
                 </div>
               </div>
               <div class="field">

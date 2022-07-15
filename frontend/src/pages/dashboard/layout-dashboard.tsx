@@ -5,9 +5,10 @@ import { FaSolidAngleLeft } from "solid-icons/fa";
 import MenuLink from "@/components/menu-link";
 import EventMenu from "@/components/event-menu";
 import { EventContextProvider } from "@/lib/event";
+import type { RouteData } from "@/lib/route-data";
 
 export default function LayoutBase() {
-  const routeData: any = useRouteData();
+  const routeData: RouteData = useRouteData();
   createEffect(() => console.log(routeData.events()));
   return (
     <EventContextProvider>
@@ -41,7 +42,7 @@ export default function LayoutBase() {
                   <p class="menu-label">Events</p>
                   <ul class="menu-list">
                     <For each={routeData.events().events}>
-                      {(event) => <EventMenu event={event}></EventMenu>}
+                      {(event) => <EventMenu event={event} />}
                     </For>
                   </ul>
                 </Show>

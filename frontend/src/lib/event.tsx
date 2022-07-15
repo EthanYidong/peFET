@@ -1,5 +1,7 @@
-import { createSignal, createContext, createMemo, useContext, createEffect } from "solid-js";
+import { createContext, createMemo, useContext } from "solid-js";
 import { useRouteData, RouteContextObj } from "solid-app-router";
+
+export type PefetEvent = any;
 
 const EventContext = createContext<() => any>();
 

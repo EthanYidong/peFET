@@ -1,4 +1,4 @@
-import { createSignal, createContext, createMemo, useContext, runWithOwner, createEffect, on } from "solid-js";
+import { createSignal, createContext, useContext, runWithOwner, createEffect, on } from "solid-js";
 
 import Shepherd from "shepherd.js";
 

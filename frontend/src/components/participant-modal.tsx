@@ -1,13 +1,9 @@
 import {
   Show,
-  For,
-  createSignal,
   createResource,
   runWithOwner,
   createEffect,
-  on,
 } from "solid-js";
-import { useRouteData } from "solid-app-router";
 import { FaSolidTimes, FaSolidAngleLeft, FaSolidAngleRight, } from "solid-icons/fa";
 
 import { API_URL, useToken } from "@/lib/api";
@@ -16,7 +12,6 @@ import { useEvent } from "@/lib/event";
 import { clickOutside } from "@/lib/directives";
 
 async function fetchReq(data, { owner }) {
-  const routeData: any = runWithOwner(owner, () => useRouteData());
   const [token, _setToken, _eraseToken] = useToken(owner);
   const event: any = runWithOwner(owner, useEvent);
 
@@ -41,8 +36,6 @@ async function fetchReq(data, { owner }) {
 }
 
 export default function ParticipantModal(props) {
-  const routeData: any = useRouteData();
-
   const [fetchData] = createResource(() => props.participant(), withOwner(fetchReq));
 
   onButton("Escape", props.onClose);
@@ -57,7 +50,7 @@ export default function ParticipantModal(props) {
 
   return (
     <div class="modal is-active">
-      <div class="modal-background"></div>
+      <div class="modal-background" />
       <div class="modal-card" use:clickOutside={props.onClose}>
         <header class="modal-card-head">
           <p class="modal-card-title">
@@ -69,7 +62,7 @@ export default function ParticipantModal(props) {
         </header>
         <section class="modal-card-body" style={{"height": "100vh"}}>
           <Show when={!fetchData.loading}>
-            <img ref={subImg}></img>
+            <img ref={subImg} />
           </Show>
         </section>
         <footer class="modal-card-foot">

@@ -17,9 +17,9 @@ export default function Navbar() {
           classList={{ "is-active": isActive() }}
           onClick={() => setIsActive(!isActive())}
         >
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
+          <span aria-hidden="true" />
+          <span aria-hidden="true" />
+          <span aria-hidden="true" />
         </a>
         <div class="navbar-menu" classList={{ "is-active": isActive() }}>
           <div class="navbar-start">

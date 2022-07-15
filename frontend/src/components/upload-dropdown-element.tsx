@@ -1,12 +1,10 @@
-import { createSignal, createResource, runWithOwner, createEffect, on } from "solid-js";
-import { useRouteData } from "solid-app-router";
+import { createSignal, createResource, createEffect } from "solid-js";
 
-import { API_URL, useToken } from "@/lib/api";
+import { useToken } from "@/lib/api";
 import { withOwner } from "@/lib/helpers";
 
 async function submitReq(data, url, onFinished, { owner }) {
   const [token, _setToken, _clearToken] = useToken(owner);
-  const routeData: any = runWithOwner(owner, () => useRouteData());
   const fetchResp = await fetch(
     url(),
     {
@@ -54,7 +52,7 @@ export default function UploadDropdownElement(props) {
           <input
             ref={fileUploadInput}
             type="file"
-            style="display: none;"
+            style={{"display":"none"}}
             name={props.name}
             accept={props.accept}
             onChange={onFormSubmit}

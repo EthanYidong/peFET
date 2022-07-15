@@ -5,10 +5,9 @@ import {
   createResource,
   runWithOwner,
   createEffect,
-  on,
 } from "solid-js";
 import { useRouteData } from "solid-app-router";
-import { FaSolidEdit, FaSolidEllipsisH, FaSolidSave } from "solid-icons/fa";
+import { FaSolidEdit, FaSolidSave } from "solid-icons/fa";
 
 import { withOwner } from "@/lib/helpers";
 import { useEvent } from "@/lib/event";
@@ -53,7 +52,7 @@ export default function ParticipantTableRow(props) {
     if (prev && !props.editing) {
       const formData = new FormData(editForm);
       const data = {};
-      for (let field of formData) {
+      for (const field of formData) {
         const [key, value] = field;
         data[key] = value;
       }

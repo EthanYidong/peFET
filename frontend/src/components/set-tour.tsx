@@ -1,4 +1,4 @@
-import { createEffect, createResource, on, onMount, onCleanup } from "solid-js";
+import { createEffect, createResource, onCleanup } from "solid-js";
 
 import { useToken, API_URL } from "@/lib/api";
 import { withOwner } from "@/lib/helpers";
@@ -28,7 +28,7 @@ async function fetchReq(_data, {owner}) {
 
 export default function SetTour(props) {
   const [fetchData] = createResource(withOwner(fetchReq));
-  const [tour, setSteps, setOnComplete, clear] = useShepherd();
+  const [_tour, setSteps, setOnComplete, clear] = useShepherd();
   
   createEffect(() => {
     if(fetchData() && !fetchData().tutorial_complete) {

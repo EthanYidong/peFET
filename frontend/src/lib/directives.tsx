@@ -1,5 +1,6 @@
 import { onCleanup } from "solid-js";
 
+/* eslint @typescript-eslint/no-namespace: "off"*/
 declare module "solid-js" {
   namespace JSX {
     interface Directives {
@@ -15,7 +16,7 @@ export function customFormHandler(el, accessor) {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = {};
-    for (let field of formData) {
+    for (const field of formData) {
       const [key, value] = field;
       data[key] = value;
     }

@@ -1,5 +1,5 @@
 // TODO: consolidate form code with create event form
-import { Show, createSignal, createResource, runWithOwner, createEffect } from "solid-js";
+import { Show, createSignal, createResource, runWithOwner } from "solid-js";
 import { useRouteData } from "solid-app-router";
 
 import date from "date-and-time";
@@ -8,11 +8,13 @@ import { customFormHandler } from "@/lib/directives";
 import { API_URL, useToken } from "@/lib/api";
 import { withOwner } from "@/lib/helpers";
 import { useEvent } from "@/lib/event";
+import type { PefetEvent } from "@/lib/event";
+import type { RouteData } from "@/lib/route-data";
 
 async function submitReq(data, { owner }) {
   const [token, _setToken, _eraseToken] = useToken(owner);
-  const event: any = runWithOwner(owner, useEvent);
-  const routeData: any = runWithOwner(owner, useRouteData);
+  const event: PefetEvent = runWithOwner(owner, useEvent);
+  const routeData: RouteData = runWithOwner<RouteData>(owner, useRouteData);
 
   const fetchResp = await fetch(`${API_URL}/api/event/${event().id}/update`, {
     method: "POST",

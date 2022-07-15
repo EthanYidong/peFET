@@ -2,6 +2,15 @@ import { createEffect, createResource } from "solid-js";
 import { API_URL, useToken } from "@/lib/api";
 import { withOwner } from "@/lib/helpers";
 
+export interface RouteData {
+  events: any,
+  mutateEvents: (any) => void,
+  refetchEvents: () => void,
+  event: any,
+  mutateEvent: (any) => void,
+  refetchEvent: () => void,
+}
+
 async function fetchEventsData(_, { owner }) {
   const [token, _setToken, _clearToken] = useToken(owner);
   const fetchResp = await fetch(`${API_URL}/api/event/all`, {
@@ -20,7 +29,7 @@ async function fetchEventsData(_, { owner }) {
   }
 }
 
-export function EventsData({ params, location, navigate, data }) {
+export function EventsData({ _params, _location, navigate, data }) {
   const [token, _setToken, clearToken] = useToken();
   if (token()) {
     const [fetchData, { mutate, refetch }] = createResource(
@@ -61,8 +70,8 @@ async function fetchEventData(id, { owner }) {
   }
 }
 
-export function EventData({ params, location, navigate, data }) {
-  const [token, _setToken, clearToken] = useToken();
+export function EventData({ params, _location, navigate, data }) {
+  const [token, _setToken, _clearToken] = useToken();
   if (token()) {
     const [fetchData, { mutate, refetch }] = createResource(
       () => params.id,

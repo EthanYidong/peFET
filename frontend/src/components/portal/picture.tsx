@@ -1,18 +1,15 @@
 import {
-  For,
   createSignal,
   createResource,
   runWithOwner,
   createEffect,
   on,
-  untrack,
 } from "solid-js";
-import { useRouteData, useLocation } from "solid-app-router";
+import { useLocation } from "solid-app-router";
 import { FaSolidTimes, FaSolidUpload } from "solid-icons/fa";
 
-import { API_URL, useToken } from "@/lib/api";
+import { API_URL } from "@/lib/api";
 import { withOwner, onButton } from "@/lib/helpers";
-import { useEvent } from "@/lib/event";
 import { clickOutside, customFormHandlerRaw } from "@/lib/directives";
 
 import Errors from "@/components/errors";
@@ -54,7 +51,7 @@ export default function Picture(props) {
   return (
     <form use:customFormHandlerRaw={onFormSubmit}>
       <div class="modal is-active">
-        <div class="modal-background"></div>
+        <div class="modal-background" />
         <div class="modal-card" use:clickOutside={() => props.onClose(false)}>
           <header class="modal-card-head">
             <p class="modal-card-title">Upload Image</p>
@@ -63,7 +60,7 @@ export default function Picture(props) {
             </a>
           </header>
           <section class="modal-card-body">
-          <Errors errors={fetchData.error?.errors}></Errors>
+          <Errors errors={fetchData.error?.errors} />
             <div class="box">
               <h2 class="subtitle">Choose / Take Picture</h2>
               <div class="file">

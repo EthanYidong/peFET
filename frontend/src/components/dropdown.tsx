@@ -1,5 +1,4 @@
 import { createSignal, children } from "solid-js";
-import { FaSolidAngleDown, FaSolidEnvelope } from "solid-icons/fa";
 
 import { clickOutside } from "@/lib/directives";
 

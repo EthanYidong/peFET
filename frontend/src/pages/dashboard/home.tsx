@@ -1,4 +1,4 @@
-import { createSignal, createResource, runWithOwner, onMount } from "solid-js";
+import { createSignal, createResource, runWithOwner } from "solid-js";
 import { useRouteData, useNavigate } from "solid-app-router";
 
 import date from "date-and-time";
@@ -9,10 +9,11 @@ import { steps } from "@/lib/tour";
 import { withOwner } from "@/lib/helpers";
 import SetTour from "@/components/set-tour";
 import Errors from "@/components/errors";
+import type { RouteData } from "@/lib/route-data";
 
 async function submitReq(data, { owner }) {
   const [token, _setToken, _eraseToken] = useToken(owner);
-  const routeData: any = runWithOwner(owner, useRouteData);
+  const routeData: RouteData = runWithOwner<RouteData>(owner, useRouteData);
   const navigate = runWithOwner(owner, useNavigate);
 
   const fetchResp = await fetch(`${API_URL}/api/event/create`, {
@@ -49,7 +50,7 @@ export default function Home() {
   return (
     <>
       <SetTour steps={steps.home}/>
-      <Errors errors={fetchData.error?.errors}></Errors>
+      <Errors errors={fetchData.error?.errors} />
       <div class="box tour-create-new-event">
         <h4 class="title is-4">Create a New Event</h4>
         <form use:customFormHandler={onFormSubmit}>

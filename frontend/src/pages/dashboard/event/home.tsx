@@ -13,7 +13,7 @@ import {
 import { createStore } from "solid-js/store";
 import { useRouteData } from "solid-app-router";
 
-import { FaSolidEdit, FaSolidPlusCircle } from "solid-icons/fa";
+import { FaSolidPlusCircle } from "solid-icons/fa";
 
 import { customFormHandler } from "@/lib/directives";
 import { steps } from "@/lib/tour";
@@ -28,11 +28,13 @@ import ParticipantModal from "@/components/participant-modal";
 import SetTour from "@/components/set-tour";
 import Errors from "@/components/errors";
 import Success from "@/components/success";
+import type { PefetEvent } from "@/lib/event";
+import type { RouteData } from "@/lib/route-data";
 
 async function submitReq(data, { owner }) {
   const [token, _setToken, _eraseToken] = useToken(owner);
-  const routeData: any = runWithOwner(owner, useRouteData);
-  const event: any = runWithOwner(owner, useEvent);
+  const routeData: RouteData = runWithOwner<RouteData>(owner, useRouteData);
+  const event: PefetEvent = runWithOwner<PefetEvent>(owner, useEvent);
 
   const fetchResp = await fetch(
     `${API_URL}/api/event/${event().id}/participants/create`,
@@ -79,7 +81,7 @@ async function completeTutorial(owner) {
 }
 
 export default function Home() {
-  const routeData: any = useRouteData();
+  const routeData: RouteData = useRouteData();
   const event = useEvent();
 
   const [formData, setFormData] = createSignal(null);
@@ -88,7 +90,7 @@ export default function Home() {
   const [editing, setEditing] = createSignal(null);
   const isEditing = createSelector(editing);
 
-  const [selected, setSelected] = createStore({} as any);
+  const [selected, setSelected] = createStore<any>({});
 
   const [emailModal, setEmailModal] = createSignal(false);
   const [participantModal, setParticipantModal] = createSignal(null);
@@ -173,7 +175,7 @@ export default function Home() {
   return (
     <>
       <SetTour steps={steps.dashboard} onComplete={() => completeTutorial(owner)}/>
-      <Errors errors={allErrors()}></Errors>
+      <Errors errors={allErrors()} />
       <Show when={sentEmails()}>
         <Success success={["Successfully sent emails"]}/>
       </Show>
@@ -201,7 +203,7 @@ export default function Home() {
             <UploadDropdown onError={setUploadErrors} refetchEvent={routeData.refetchEvent}/>
           </div>
         </div>
-        <div class="level-right"></div>
+        <div class="level-right" />
       </div>
       <form ref={createForm} id="createForm" use:customFormHandler={onFormSubmit} />
       <Show when={routeData.event()}>
@@ -217,13 +219,13 @@ export default function Home() {
                     checked={allSelected()}
                   />
                 </th>
-                <th></th>
+                <th />
                 <th>Name</th>
                 <th>Email</th>
                 <th>Status</th>
               </tr>
               <tr class="tour-manual-create">
-                <td></td>
+                <td />
                 <td>
                   <button
                     class="button is-small is-text"
@@ -249,7 +251,7 @@ export default function Home() {
                     form="createForm"
                   />
                 </td>
-                <td></td>
+                <td />
               </tr>
             </thead>
             <tbody>

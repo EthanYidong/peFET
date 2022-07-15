@@ -1,9 +1,7 @@
 import {
-  createSignal,
   createResource,
   runWithOwner,
   createEffect,
-  onMount,
 } from "solid-js";
 import { useLocation } from "solid-app-router";
 

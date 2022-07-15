@@ -20,14 +20,14 @@ export default function ParticipantEditor(props: {
         type="text"
         value={untrack(() => props.participant.name ?? "")}
         onInput={(e) => inputHandler("name", e)}
-      ></input>
+       />
       <p>Email:</p>
       <input
         class="border-b-2 border-black focus:border-blue-600 outline-none"
         type="text"
         value={untrack(() => props.participant.email ?? "")}
         onInput={(e) => inputHandler("email", e)}
-      ></input>
+       />
     </div>
   );
 }
