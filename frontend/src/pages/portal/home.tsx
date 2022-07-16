@@ -1,14 +1,16 @@
 import { Show, createEffect, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
-import { useLocation } from "solid-app-router";
+import { useLocation, useRouteData } from "solid-app-router";
 
 import Qr from "@/components/portal/qr";
 import Picture from "@/components/portal/picture";
 import Success from "@/components/success";
-import exampleImgUrl from '@/static/example.jpg';
+import exampleImgUrl from "@/static/example.jpg";
+import type { PortalRouteData } from "@/lib/route-data";
 
 export default function Home() {
   const location = useLocation();
+  const routeData: PortalRouteData = useRouteData();
 
   const [qr, setQr] = createSignal(false);
   const [picture, setPicture] = createSignal(false);
@@ -16,8 +18,19 @@ export default function Home() {
 
   createEffect(() => console.log(location.query.token));
 
+  const successValue = () => {
+    if(submitted()) {
+      return ["Successfully submitted"];
+    } else if (routeData.portal().participant.status === "Y") {
+      return ["You have already submitted"];
+    } else { 
+      return [];
+    }
+  }
+
   return (
     <>
+    <Show when={routeData.portal()}>
       <Portal mount={document.getElementById("portal")}>
         <Show when={qr()}>
           <Qr onClose={() => setQr(false)}/>
@@ -27,9 +40,7 @@ export default function Home() {
         <Picture onClose={(v) => {setPicture(false); setSubmitted(v);}}/>
       </Show>
       <Show when={!qr()}>
-        <Show when={submitted()}>
-          <Success success={["Successfully submitted!"]}/>
-        </Show>
+        <Success success={successValue()}/>
         <section class="section">
           <h1 class="title">
             peFET submission portal
@@ -57,6 +68,7 @@ export default function Home() {
             <img class="is-half" src={exampleImgUrl} style={{"width": "50vw"}}/>
           </div>
         </section>
+      </Show>
       </Show>
     </>
   );

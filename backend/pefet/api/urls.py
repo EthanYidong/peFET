@@ -42,6 +42,7 @@ urlpatterns = [
         path('me', account.me),
     ])),
     path('portal/', include([
+        path('me', portal.me),
         path('qr_code', portal.qr_code),
         path('upload_image', portal.upload_image),
     ]))

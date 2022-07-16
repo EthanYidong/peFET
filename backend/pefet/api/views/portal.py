@@ -7,6 +7,7 @@ import uuid
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
+from django.forms.models import model_to_dict
 
 import jwt
 import qrcode
@@ -17,6 +18,21 @@ from ..models import Participant, UploadedFetImage
 from ..helpers import auth
 from ..cv import detect
 
+
+@require_http_methods(['GET'])
+def me(request):
+    try:
+        claims = auth.extract_claims(
+            request, secret=settings.PARTICIPANT_JWT_SECRET)
+    except:
+        return JsonResponse({'errors': ['Invalid token']}, status=401)
+
+    try:
+        participant = Participant.objects.get(id=claims['sub'])
+    except:
+        return JsonResponse({'errors': ['No such participant']}, status=404)
+
+    return JsonResponse({'participant': model_to_dict(participant)}, safe=False)
 
 @require_http_methods(['GET'])
 def qr_code(request):

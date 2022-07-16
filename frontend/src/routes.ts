@@ -1,6 +1,6 @@
 import { lazy } from "solid-js";
 import type { RouteDefinition } from "solid-app-router";
-import { EventData, EventsData } from "@/lib/route-data";
+import { EventData, EventsData, PortalData } from "@/lib/route-data";
 
 export const routes: RouteDefinition[] = [
   {
@@ -21,6 +21,7 @@ export const routes: RouteDefinition[] = [
   },
   {
     path: "/portal",
+    data: PortalData,
     children: [
       {
         path: "/",

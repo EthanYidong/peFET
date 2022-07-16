@@ -11,6 +11,12 @@ export interface RouteData {
   refetchEvent: () => void,
 }
 
+export interface PortalRouteData {
+  portal: any,
+  mutatePortal: (any) => void,
+  refetchPortal: () => void,
+}
+
 async function fetchEventsData(_, { owner }) {
   const [token, _setToken, _clearToken] = useToken(owner);
   const fetchResp = await fetch(`${API_URL}/api/event/all`, {
@@ -29,7 +35,7 @@ async function fetchEventsData(_, { owner }) {
   }
 }
 
-export function EventsData({ _params, _location, navigate, data }) {
+export function EventsData({ navigate, data }) {
   const [token, _setToken, clearToken] = useToken();
   if (token()) {
     const [fetchData, { mutate, refetch }] = createResource(
@@ -70,7 +76,7 @@ async function fetchEventData(id, { owner }) {
   }
 }
 
-export function EventData({ params, _location, navigate, data }) {
+export function EventData({ params, navigate, data }) {
   const [token, _setToken, _clearToken] = useToken();
   if (token()) {
     const [fetchData, { mutate, refetch }] = createResource(
@@ -91,4 +97,40 @@ export function EventData({ params, _location, navigate, data }) {
   } else {
     navigate("/dashboard");
   }
+}
+
+
+async function fetchPortalData(token, { owner }) {
+  const fetchResp = await fetch(`${API_URL}/api/portal/me`, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+
+  const fetchJSON = await fetchResp.json();
+
+  if (fetchResp.ok) {
+    return fetchJSON;
+  } else {
+    return Promise.reject(fetchJSON);
+  }
+}
+
+export function PortalData({ params, location, navigate, data }) {
+  const [fetchData, { mutate, refetch }] = createResource(
+    () => location.query.token,
+    withOwner(fetchPortalData)
+  );
+  createEffect(() => {
+    if (fetchData.error) {
+      navigate("/");
+    }
+  });
+  return {
+    portal: fetchData,
+    mutatePortal: mutate,
+    refetchPortal: refetch,
+    ...data,
+  };
 }
