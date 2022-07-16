@@ -206,5 +206,7 @@ def extractTestImg(img_data):
         _, intersection = cv2.rotatedRectangleIntersection(overlapping_mask_rect, grey_rect)
         if intersection is not None:
             test_rect = crop_rotated_rectangle(img, grey_rect)
-
+    
+    if test_rect is None:
+        return None
     return Image.fromarray(cv2.cvtColor(test_rect, cv2.COLOR_BGR2RGB))
