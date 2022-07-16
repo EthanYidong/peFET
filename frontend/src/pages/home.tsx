@@ -10,6 +10,7 @@ export default function Home() {
           <div>
             <p class="title">peFET</p>
             <p class="subtitle">Pre-event fast and easy testing</p>
+            <p class="subtitle">peFET allows you to easily send notification emails to participants of your event, and collect FET results from them.</p>
           </div>
         </div>
       </section>
