@@ -9,7 +9,7 @@ import jwt
 from email_validator import validate_email
 
 from ..models import User
-from ..helpers import auth, json_data
+from ..helpers import auth, json_data, password
 
 
 @require_http_methods(['POST'])
@@ -29,6 +29,9 @@ def signup(request, data):
         email = validate_email(data['email'], check_deliverability=False).email
     except:
         return JsonResponse({'errors': ['Invalid email format']}, status=400)
+
+    if not password.validate(data['password']):
+        return JsonResponse({'errors': ['Invalid password: must be 8 characters or more']}, status=400)
 
     new_user = User(email=email, password=bcrypt.hashpw(
         bytes(data['password'], 'utf-8'), bcrypt.gensalt()))

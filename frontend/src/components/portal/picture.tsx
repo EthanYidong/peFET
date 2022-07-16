@@ -41,11 +41,20 @@ export default function Picture(props) {
   const [formData, setFormData] = createSignal(null);
   const [fetchData] = createResource(formData, withOwner(submitReq));
 
+  let fileInput;
+  let fileLabel;
+
   createEffect(on(fetchData, () => props.onClose(true), {defer: true}));
   onButton("Escape", () => props.onClose(false));
 
   function onFormSubmit(data) {
     setFormData(data);
+  }
+
+  function onFileChange() {
+    if (fileInput.files.length > 0) {
+      fileLabel.textContent = fileInput.files[0].name;
+    }
   }
 
   return (
@@ -65,12 +74,12 @@ export default function Picture(props) {
               <h2 class="subtitle">Choose / Take Picture</h2>
               <div class="file">
                 <label class="file-label">
-                  <input class="file-input" type="file" accept="image/*" name="image"/>
+                  <input ref={fileInput} class="file-input" type="file" accept="image/*" name="image" onChange={onFileChange}/>
                   <span class="file-cta">
                     <span class="file-icon">
                       <FaSolidUpload/>
                     </span>
-                    <span class="file-label">
+                    <span ref={fileLabel} class="file-label">
                       Choose a file…
                     </span>
                   </span>

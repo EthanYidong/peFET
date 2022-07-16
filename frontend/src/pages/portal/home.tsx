@@ -5,6 +5,7 @@ import { useLocation } from "solid-app-router";
 import Qr from "@/components/portal/qr";
 import Picture from "@/components/portal/picture";
 import Success from "@/components/success";
+import exampleImgUrl from '@/static/example.jpg';
 
 export default function Home() {
   const location = useLocation();
@@ -48,9 +49,12 @@ export default function Home() {
         <section class="section">
           <div class="content">
             <h5 class="subtitle is-5">Directions</h5>
-
             <p>On a laptop (recommended), desktop, tablet, or any device with a sufficently large screen, click the Show QR Code button and position your completed test such that the QR code and test can be in the same picture, with both of them being fully visible.</p>
             <p>On a phone (recommended), tablet, or any device with an easily positionable camera, click the Take Picture button to upload a photo of the QR code and the completed test.</p>
+          </div>
+          <div class="content">
+            <h5 class="subtitle is-5">Example</h5>
+            <img class="is-half" src={exampleImgUrl} style={{"width": "50vw"}}/>
           </div>
         </section>
       </Show>

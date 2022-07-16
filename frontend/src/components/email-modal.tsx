@@ -1,5 +1,6 @@
 import {
   For,
+  Show,
   createSignal,
   createResource,
   createEffect,
@@ -12,6 +13,7 @@ import { API_URL, useToken } from "@/lib/api";
 import { withOwner, onButton } from "@/lib/helpers";
 import { useEvent } from "@/lib/event";
 import { clickOutside, customFormHandler } from "@/lib/directives";
+import Errors from "@/components/errors";
 
 async function submitReq(data, { owner }) {
   const event = useEvent();
@@ -70,9 +72,13 @@ export default function EmailModal(props) {
             <div class="box">
               <h2 class="subtitle">Send Emails To</h2>
               <ul>
-                <For each={props.selectedParticipants()}>
-                  {(participant: any) => <li>{participant.email}</li>}
-                </For>
+                <Show when={props.selectedParticipants().length} fallback={
+                  <Errors errors={["No participants selected"]}/>
+                }>
+                  <For each={props.selectedParticipants()}>
+                    {(participant: any) => <li>{participant.email}</li>}
+                  </For>
+                </Show>
               </ul>
             </div>
             <div class="box">
