@@ -41,10 +41,14 @@ export default function ParticipantModal(props) {
   onButton("Escape", props.onClose);
 
   let subImg;
+  let exImg;
 
   createEffect(() => {
     if(fetchData()) {
       subImg.src = `data:image/png;base64,${fetchData().original_image}`;
+      if(fetchData().extracted_image) {
+        exImg.src = `data:image/png;base64,${fetchData().extracted_image}`;
+      }
     }
   });
 
@@ -62,6 +66,7 @@ export default function ParticipantModal(props) {
         </header>
         <section class="modal-card-body" style={{"height": "100vh"}}>
           <Show when={!fetchData.loading}>
+            <img ref={exImg} />
             <img ref={subImg} />
           </Show>
         </section>

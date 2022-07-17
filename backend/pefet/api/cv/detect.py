@@ -193,7 +193,7 @@ def extractTestImg(img_data):
     overlapping_mask_rect = cv2.minAreaRect(largest_overlapping_contour)
 
     lower_grey = np.array([100, 20, 100])
-    upper_grey = np.array([115, 120, 255])
+    upper_grey = np.array([115, 150, 255])
 
     grey_mask = process_mask(cv2.inRange(hsv_tuned_img, lower_grey, upper_grey))
     grey_contours = list(imutils.grab_contours(cv2.findContours(grey_mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)))

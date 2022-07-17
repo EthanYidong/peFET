@@ -278,9 +278,18 @@ def get_participant_submission(request, event_id, participant_id):
 
     original_image_arr = io.BytesIO()
     original_image.save(original_image_arr, format='PNG')
-
     original_image_b64 = base64.b64encode(original_image_arr.getvalue())
-    return JsonResponse({
+
+    return_map = {
         'original_image': str(original_image_b64, encoding='utf-8')
-    })
+    }
+
+    if upload.extracted_image:
+        extracted_image = Image.open(upload.extracted_image)
+        extracted_image_arr = io.BytesIO()
+        extracted_image.save(extracted_image_arr, format='PNG')
+        extracted_image_b64 = base64.b64encode(extracted_image_arr.getvalue())
+
+        return_map['extracted_image'] = str(extracted_image_b64, encoding='utf-8')
+    return JsonResponse(return_map)
 

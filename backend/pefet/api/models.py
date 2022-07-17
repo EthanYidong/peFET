@@ -49,4 +49,4 @@ class UploadedFetImage(models.Model):
     extracted_image = models.ImageField(upload_to='upload/extracted/', blank=True, null=True)
 
     def __str__(self):
-        return self.image.url
+        return self.participant.name
