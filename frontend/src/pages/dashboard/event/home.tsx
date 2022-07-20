@@ -25,6 +25,7 @@ import EmailDropdown from "@/components/email-dropdown";
 import UploadDropdown from "@/components/upload-dropdown";
 import EmailModal from "@/components/email-modal";
 import ParticipantModal from "@/components/participant-modal";
+import FilterDropdown from "@/components/filter-dropdown";
 import SetTour from "@/components/set-tour";
 import Errors from "@/components/errors";
 import Success from "@/components/success";
@@ -92,6 +93,8 @@ export default function Home() {
 
   const [selected, setSelected] = createStore<any>({});
 
+  const [filter, setFilter] = createSignal((p) => true);
+
   const [emailModal, setEmailModal] = createSignal(false);
   const [participantModal, setParticipantModal] = createSignal(null);
   const [sentEmails, setSentEmails] = createSignal(false);
@@ -106,7 +109,7 @@ export default function Home() {
   const owner = getOwner();
 
   const filteredParticipants = createMemo(
-    () => routeData.event()?.participants
+    () => routeData.event()?.participants.filter(filter())
   );
 
   const allSelected = createMemo(() => {
@@ -199,6 +202,9 @@ export default function Home() {
           <div class="level-item tour-send-emails">
             <EmailDropdown openEmailModal={() => {setEmailModal(true); setSentEmails(false);}} />
           </div>
+          <div class="level-item">
+            <FilterDropdown setFilter={setFilter} />
+          </div>
           <div class="level-item tour-upload-csv">
             <UploadDropdown onError={setUploadErrors} refetchEvent={routeData.refetchEvent}/>
           </div>
@@ -255,7 +261,7 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              <For each={routeData.event().participants}>
+              <For each={filteredParticipants()}>
                 {(participant: any, index) => (
                   <ParticipantTableRow
                     participant={participant}
