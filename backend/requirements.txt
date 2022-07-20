@@ -17,6 +17,7 @@ jsonschema==4.6.0
 numpy==1.23.1
 opencv-python==4.6.0.66
 packaging==21.3
+password-validator==1.0
 Pillow==9.1.1
 pycodestyle==2.8.0
 pycparser==2.21
