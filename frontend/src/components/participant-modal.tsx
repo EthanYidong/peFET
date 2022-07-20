@@ -39,6 +39,8 @@ export default function ParticipantModal(props) {
   const [fetchData] = createResource(() => props.participant(), withOwner(fetchReq));
 
   onButton("Escape", props.onClose);
+  onButton("ArrowLeft", props.onPrev);
+  onButton("ArrowRight", props.onNext);
 
   let subImg;
   let exImg;
